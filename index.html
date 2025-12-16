@@ -60,10 +60,7 @@
         position: relative;
         overflow: hidden;
       }
-      /* Barra colorida no topo */
-      .prizes-box::before {
-        content: ''; position: absolute; top:0; left:0; width: 100%; height: 4px; background: var(--primary);
-      }
+      .prizes-box::before { content: ''; position: absolute; top:0; left:0; width: 100%; height: 4px; background: var(--primary); }
 
       .prizes-title { 
         color: var(--primary); 
@@ -85,7 +82,7 @@
         padding: 8px 0; 
         border-bottom: 1px solid #f5f5f5; 
         gap: 12px; 
-        flex-wrap: wrap; /* Permite quebrar linha em telas muito pequenas */
+        flex-wrap: wrap; 
       }
       .prize-item:last-child { border-bottom: none; }
       
@@ -199,46 +196,13 @@
       @keyframes runRace { 0% { left: -10%; transform: scaleX(1); } 49% { transform: scaleX(1); } 50% { left: 110%; transform: scaleX(-1); } 100% { left: -10%; transform: scaleX(-1); } }
       .loading-text { font-weight: bold; color: var(--primary); font-size: 1.2rem; margin-top: 20px; animation: pulse 1s infinite; }
 
-      /* --- ECRÃ DE SUCESSO (COM ANIMAÇÃO DE CONFETES E MEDALHA) --- */
-      .success-box { 
-        background: white; 
-        padding: 40px 20px; 
-        border-radius: 20px; 
-        text-align: center; 
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1); 
-        animation: fadeInUp 0.5s ease-out;
-        position: relative;
-        overflow: hidden;
-      }
-      
-      .success-message {
-        font-size: 1.1rem;
-        color: #555;
-        margin: 15px 0;
-        line-height: 1.5;
-      }
-
-      /* Animação da Medalha */
-      @keyframes bounce {
-        0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-        40% {transform: translateY(-20px);}
-        60% {transform: translateY(-10px);}
-      }
-      .medal-bounce {
-        animation: bounce 2s infinite;
-      }
-
-      /* Confetes CSS */
-      .confetti {
-        position: absolute;
-        width: 10px; height: 10px;
-        background-color: #f00;
-        animation: fall linear forwards;
-      }
-      @keyframes fall {
-        to { transform: translateY(100vh) rotate(720deg); }
-      }
-
+      /* SUCESSO ANIMADO */
+      .success-box { background: white; padding: 40px 20px; border-radius: 20px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.1); animation: fadeInUp 0.5s ease-out; position: relative; overflow: hidden; }
+      .success-message { font-size: 1.1rem; color: #555; margin: 15px 0; line-height: 1.5; }
+      @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-20px);} 60% {transform: translateY(-10px);} }
+      .medal-bounce { animation: bounce 2s infinite; }
+      .confetti { position: absolute; width: 10px; height: 10px; background-color: #f00; animation: fall linear forwards; }
+      @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
       @keyframes fadeInUp { from { opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
       .hidden { display: none !important; }
       footer { text-align: center; padding: 20px; font-size: 0.75rem; color: #999; background: white; border-top: 1px solid #eee; }
@@ -289,13 +253,18 @@
         <div class="motivational-box" style="display:none;"><p class="motivational-text"></p></div>
         <p class="event-subtitle">Preencha seus dados para confirmar a presença.</p>
 
-        <!-- LISTA DINÂMICA DE PREMIAÇÃO -->
-        <div class="prizes-box">
-          <div class="prizes-title"><i class="fas fa-trophy"></i> Premiação</div>
-          <div id="user-prizes-list" class="prize-list">
-            <!-- Itens inseridos via JS -->
-          </div>
+        <!-- PREMIAÇÃO GERAL -->
+        <div id="prizes-geral-container" class="prizes-box" style="display:none;">
+          <div class="prizes-title"><i class="fas fa-trophy"></i> Premiação Geral</div>
+          <div id="user-prizes-list" class="prize-list"></div>
           <div id="user-prizes-obs" class="prize-obs" style="display:none;"></div>
+        </div>
+
+        <!-- PREMIAÇÃO POR CATEGORIA -->
+        <div id="prizes-cat-container" class="prizes-box" style="display:none;">
+          <div class="prizes-title"><i class="fas fa-medal"></i> Premiação por Categoria</div>
+          <div id="user-prizes-cat-list" class="prize-list"></div>
+          <div id="user-prizes-cat-obs" class="prize-obs" style="display:none;"></div>
         </div>
 
         <form id="cadastroForm" class="form-card" onsubmit="enviarDados(event)">
@@ -316,10 +285,9 @@
         </form>
       </div>
 
-      <!-- SUCESSO (PERSONALIZADO E ANIMADO) -->
+      <!-- SUCESSO ANIMADO -->
       <div id="success-view" class="hidden">
         <div class="success-box" id="success-box-content">
-          <!-- CONTEÚDO SERÁ PREENCHIDO DINAMICAMENTE PELO JS -->
           <i class="fas fa-medal fa-4x medal-bounce" style="color: gold; margin-bottom: 20px;"></i>
           <h2 style="color: var(--primary); text-transform: uppercase;">Parabéns, <span id="success-name">Atleta</span>!</h2>
           <p class="success-subtitle" style="font-weight:bold; color:#333;">Sua inscrição foi confirmada com sucesso.</p>
@@ -344,7 +312,7 @@
             <div id="tab-dashboard" class="tab-view active">
               <div class="total-card"><h3>Total de Inscritos (Filtrado)</h3><div class="total-number" id="admin-total">0</div></div>
               
-              <!-- FILTROS DUPLOS -->
+              <!-- FILTROS -->
               <div class="filters-container">
                 <div class="filter-group">
                   <label>Filtrar por Categoria:</label>
@@ -366,7 +334,6 @@
                   </select>
                 </div>
               </div>
-
               <button onclick="window.print()" class="btn-print"><i class="fas fa-file-pdf"></i> Imprimir Relatório (PDF)</button>
               <div class="table-responsive"><table id="admin-table"><thead><tr><th>Data</th><th>Nome</th><th>CPF</th><th>Nasc.</th><th>Tel</th><th>Gênero</th><th>Equipe</th><th>Idade</th><th>Cat.</th><th>Endereço</th></tr></thead><tbody></tbody></table></div>
             </div>
@@ -376,43 +343,36 @@
               <div class="config-form">
                 <div class="config-section-title">Geral</div>
                 <label>Nome do Evento</label><input type="text" id="cfg-nome" class="config-input">
-                <label>Local do Evento</label><input type="text" id="cfg-local" class="config-input" placeholder="Ex: Praça Central...">
-                
+                <label>Local do Evento</label><input type="text" id="cfg-local" class="config-input">
                 <label>Imagem de Capa</label>
-                <div class="upload-group">
-                  <input type="text" id="cfg-capa" class="config-input" placeholder="Link da imagem...">
-                  <button type="button" class="btn-upload" onclick="document.getElementById('file-capa').click()"><i class="fas fa-cloud-upload-alt"></i></button>
-                  <input type="file" id="file-capa" hidden accept="image/*" onchange="uploadImgBB(this, 'cfg-capa')">
-                </div>
+                <div class="upload-group"><input type="text" id="cfg-capa" class="config-input"><button type="button" class="btn-upload" onclick="document.getElementById('file-capa').click()"><i class="fas fa-cloud-upload-alt"></i></button><input type="file" id="file-capa" hidden accept="image/*" onchange="uploadImgBB(this, 'cfg-capa')"></div>
                 <label>Imagem do Logo</label>
-                <div class="upload-group">
-                  <input type="text" id="cfg-logo" class="config-input" placeholder="Link da imagem...">
-                  <button type="button" class="btn-upload" onclick="document.getElementById('file-logo').click()"><i class="fas fa-cloud-upload-alt"></i></button>
-                  <input type="file" id="file-logo" hidden accept="image/*" onchange="uploadImgBB(this, 'cfg-logo')">
-                </div>
+                <div class="upload-group"><input type="text" id="cfg-logo" class="config-input"><button type="button" class="btn-upload" onclick="document.getElementById('file-logo').click()"><i class="fas fa-cloud-upload-alt"></i></button><input type="file" id="file-logo" hidden accept="image/*" onchange="uploadImgBB(this, 'cfg-logo')"></div>
                 <label>Frase Motivacional</label><input type="text" id="cfg-frase" class="config-input">
                 <label>Senha do Administrador</label><input type="text" id="cfg-senha" class="config-input">
                 <div class="config-section-title">Informações do Evento</div>
                 <label>Regras e Detalhes</label><textarea id="cfg-regras" class="config-input"></textarea>
-                
                 <button onclick="salvarConfig()" class="btn-save-config"><i class="fas fa-save"></i> Salvar Alterações</button>
               </div>
             </div>
 
-            <!-- ABA PREMIAÇÃO (DINÂMICA) -->
+            <!-- ABA PREMIAÇÃO DINÂMICA -->
             <div id="tab-premios" class="tab-view">
               <div class="config-form">
-                <div class="config-section-title">Configurar Prêmios</div>
-                <button type="button" class="btn-add" onclick="addPremioRow()"><i class="fas fa-plus"></i> Adicionar Prêmio</button>
                 
-                <div id="admin-premios-list">
-                  <!-- Linhas dinâmicas aqui -->
-                </div>
+                <div class="config-section-title">Premiação Geral</div>
+                <button type="button" class="btn-add" onclick="addPremioRow('admin-premios-list')"><i class="fas fa-plus"></i> Adicionar Prêmio</button>
+                <div id="admin-premios-list"></div>
+                <label style="margin-top:10px;">Observação (Geral)</label>
+                <textarea id="cfg-obs-premio" class="config-input" style="height:60px;"></textarea>
 
-                <label style="margin-top:20px;">Observação sobre Premiação</label>
-                <textarea id="cfg-obs-premio" class="config-input" placeholder="Ex: Prêmios exclusivos para moradores..."></textarea>
+                <div class="config-section-title" style="margin-top:30px;">Premiação por Categoria</div>
+                <button type="button" class="btn-add" onclick="addPremioRow('admin-premios-cat-list')"><i class="fas fa-plus"></i> Adicionar Prêmio</button>
+                <div id="admin-premios-cat-list"></div>
+                <label style="margin-top:10px;">Observação (Categoria)</label>
+                <textarea id="cfg-obs-premio-cat" class="config-input" style="height:60px;"></textarea>
 
-                <button onclick="salvarConfig()" class="btn-save-config"><i class="fas fa-save"></i> Salvar Prêmios</button>
+                <button onclick="salvarConfig()" class="btn-save-config" style="margin-top:20px;"><i class="fas fa-save"></i> Salvar Prêmios</button>
               </div>
             </div>
 
@@ -454,11 +414,9 @@
     <footer><p>Desenvolvido por <span class="dev-credit">Thiego Pereira</span></p><button class="admin-toggle" onclick="abrirModalAdmin()"><i class="fas fa-lock"></i></button></footer>
 
     <script>
-      // --- CONFIGURAÇÃO ---
       const API_URL = "https://script.google.com/macros/s/AKfycbwAQk2VM3oGr5ZhHge7ZIPy7hzQz-TqFO3u8QeAzjTEaCNURDvJW39Cyk-0MEXwzHRw/exec";
       const IMGBB_API_KEY = "fa0265b3bfc740c1eb09a7e4d6ec493a";
 
-      // --- INICIALIZAÇÃO ---
       document.addEventListener('DOMContentLoaded', () => {
         fetch(`${API_URL}?action=ping`).catch(() => {});
         carregarConfigsIniciais();
@@ -467,189 +425,101 @@
       function carregarConfigsIniciais() {
         document.querySelector('.loading-text').innerText = "Carregando evento...";
         document.getElementById('loading-overlay').classList.add('active');
-        
         fetch(`${API_URL}?action=getConfig`)
-          .then(res => res.json())
-          .then(data => {
-            if(data.status === 'success') {
-              atualizarInterface(data.data);
-            }
-            document.getElementById('loading-overlay').classList.remove('active');
-          })
-          .catch(err => {
-            console.error(err);
-            document.getElementById('loading-overlay').classList.remove('active');
-          });
+          .then(res => res.json()).then(data => { if(data.status === 'success') atualizarInterface(data.data); document.getElementById('loading-overlay').classList.remove('active'); })
+          .catch(err => { console.error(err); document.getElementById('loading-overlay').classList.remove('active'); });
       }
 
       function atualizarInterface(cfg) {
         const headerContainer = document.querySelector('.header-container');
         if(cfg.URL_CAPA) headerContainer.innerHTML = `<img src="${cfg.URL_CAPA}" class="header-image"><div class="header-overlay"></div>`;
-        
         const logoWrapper = document.querySelector('.logo-wrapper');
         if(cfg.URL_LOGO) logoWrapper.innerHTML = `<img src="${cfg.URL_LOGO}" class="logo-img">`;
-        
         document.querySelector('h1.event-title').innerText = cfg.NOME_EVENTO;
         document.getElementById('display-local').innerText = cfg.LOCAL_EVENTO || "";
         
         const motBox = document.querySelector('.motivational-box');
-        if (cfg.FRASE_MOTIVACIONAL) {
-           motBox.style.display = 'block';
-           motBox.querySelector('.motivational-text').innerHTML = `<i class="fas fa-quote-left" style="font-size:0.8em;"></i> ${cfg.FRASE_MOTIVACIONAL} <i class="fas fa-quote-right" style="font-size:0.8em;"></i>`;
-        } else { motBox.style.display = 'none'; }
+        if (cfg.FRASE_MOTIVACIONAL) { motBox.style.display = 'block'; motBox.querySelector('.motivational-text').innerHTML = `<i class="fas fa-quote-left" style="font-size:0.8em;"></i> ${cfg.FRASE_MOTIVACIONAL} <i class="fas fa-quote-right" style="font-size:0.8em;"></i>`; } else { motBox.style.display = 'none'; }
 
-        // Renderiza Prémios
-        const premiosList = document.getElementById('user-prizes-list');
-        premiosList.innerHTML = "";
-        let listaPremios = [];
-        try { listaPremios = JSON.parse(cfg.LISTA_PREMIOS); } catch(e) {}
-        
-        if (listaPremios && listaPremios.length > 0) {
-          listaPremios.forEach(p => {
-            premiosList.innerHTML += `<div class="prize-item"><span class="prize-age">${p.titulo}</span> <span class="prize-value">${p.valor}</span></div>`;
-          });
-        } else {
-          premiosList.innerHTML = "<div style='text-align:center;color:#999;padding:10px;'>Em breve.</div>";
-        }
-
+        renderizarListaPremios(cfg.LISTA_PREMIOS, 'user-prizes-list', 'prizes-geral-container');
         const obsDiv = document.getElementById('user-prizes-obs');
-        if(cfg.OBS_PREMIACAO) {
-          obsDiv.style.display = 'block';
-          obsDiv.innerText = cfg.OBS_PREMIACAO;
-        } else {
-          obsDiv.style.display = 'none';
-        }
+        if(cfg.OBS_PREMIACAO) { obsDiv.style.display = 'block'; obsDiv.innerText = cfg.OBS_PREMIACAO; } else { obsDiv.style.display = 'none'; }
+
+        renderizarListaPremios(cfg.LISTA_PREMIOS_CAT, 'user-prizes-cat-list', 'prizes-cat-container');
+        const obsCatDiv = document.getElementById('user-prizes-cat-obs');
+        if(cfg.OBS_PREMIACAO_CAT) { obsCatDiv.style.display = 'block'; obsCatDiv.innerText = cfg.OBS_PREMIACAO_CAT; } else { obsCatDiv.style.display = 'none'; }
 
         document.getElementById('info-texto').innerText = cfg.REGRAS_EVENTO || "Sem informações adicionais.";
       }
 
-      /* API IMGBB */
-      function uploadImgBB(input, targetId) {
-        if (input.files && input.files[0]) {
-          const file = input.files[0];
-          const formData = new FormData();
-          formData.append("image", file);
-          formData.append("key", IMGBB_API_KEY);
-
-          document.getElementById('loading-overlay').classList.add('active');
-          document.querySelector('.loading-text').innerText = "A enviar imagem...";
-
-          fetch("https://api.imgbb.com/1/upload", { method: "POST", body: formData })
-            .then(res => res.json())
-            .then(data => {
-              document.getElementById('loading-overlay').classList.remove('active');
-              document.querySelector('.loading-text').innerText = "Processando...";
-              if (data.success) {
-                document.getElementById(targetId).value = data.data.url;
-                mostrarAviso("Sucesso", "Imagem carregada!", false);
-              } else { mostrarAviso("Erro", "Falha ao enviar imagem.", true); }
-            })
-            .catch(error => {
-              document.getElementById('loading-overlay').classList.remove('active');
-              mostrarAviso("Erro", "Erro de conexão ImgBB.", true);
-            });
+      function renderizarListaPremios(jsonString, listId, containerId) {
+        const listEl = document.getElementById(listId);
+        const containerEl = document.getElementById(containerId);
+        listEl.innerHTML = "";
+        let lista = [];
+        try { lista = JSON.parse(jsonString); } catch(e) {}
+        
+        if (lista && lista.length > 0) {
+          containerEl.style.display = 'block';
+          lista.forEach(p => {
+            listEl.innerHTML += `<div class="prize-item"><span class="prize-age">${p.titulo}</span> <span class="prize-value">${p.valor}</span></div>`;
+          });
+        } else {
+          containerEl.style.display = 'none';
         }
       }
 
-      /* MASCARAS */
+      function uploadImgBB(input, targetId) {
+        if (input.files && input.files[0]) {
+          const formData = new FormData(); formData.append("image", input.files[0]); formData.append("key", IMGBB_API_KEY);
+          document.getElementById('loading-overlay').classList.add('active'); document.querySelector('.loading-text').innerText = "A enviar imagem...";
+          fetch("https://api.imgbb.com/1/upload", { method: "POST", body: formData }).then(res => res.json()).then(data => {
+              document.getElementById('loading-overlay').classList.remove('active');
+              if (data.success) { document.getElementById(targetId).value = data.data.url; mostrarAviso("Sucesso", "Imagem carregada!", false); } else { mostrarAviso("Erro", "Falha ao enviar imagem.", true); }
+          }).catch(() => { document.getElementById('loading-overlay').classList.remove('active'); mostrarAviso("Erro", "Erro de conexão ImgBB.", true); });
+        }
+      }
+
       function mascaraCPF(i) { var v = i.value; if(isNaN(v[v.length-1])){ i.value = v.substring(0, v.length-1); return; } v = v.replace(/\D/g,"").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2"); i.value = v; }
       function mascaraTelefone(i) { var v = i.value; v = v.replace(/\D/g,"").replace(/^(\d{2})(\d)/g,"($1) $2").replace(/(\d)(\d{4})$/,"$1-$2"); i.value = v; }
       function ativarData(input) { if (input.value && input.value.includes('/')) { const p = input.value.split('/'); input.value = `${p[2]}-${p[1]}-${p[0]}`; } input.type = 'date'; if(input.showPicker) try{input.showPicker()}catch(e){}; }
       function formatarDataVisual(input) { const v = input.value; if (v && v.includes('-')) { const p = v.split('-'); input.type = 'text'; input.value = `${p[2]}/${p[1]}/${p[0]}`; } else if (!v) input.type = 'text'; }
 
-      /* AVISO */
       function mostrarAviso(titulo, texto, isErro = false) {
         document.getElementById('aviso-titulo').innerText = titulo; document.getElementById('aviso-texto').innerText = texto;
-        const icon = document.getElementById('aviso-icon');
-        if(isErro) { icon.className = "fas fa-times-circle fa-2x"; icon.style.color = "var(--error)"; } else { icon.className = "fas fa-check-circle fa-2x"; icon.style.color = "var(--success)"; }
+        const icon = document.getElementById('aviso-icon'); if(isErro) { icon.className = "fas fa-times-circle fa-2x"; icon.style.color = "var(--error)"; } else { icon.className = "fas fa-check-circle fa-2x"; icon.style.color = "var(--success)"; }
         document.getElementById('modal-aviso').classList.add('active');
       }
       function fecharModalAviso() { document.getElementById('modal-aviso').classList.remove('active'); }
 
-      /* LOGICA ENVIO (POST) */
       function enviarDados(e) {
-        e.preventDefault(); 
-        let valido = true; const requireds = document.querySelectorAll('#cadastroForm [required]');
-        requireds.forEach(el => { const group = el.closest('.input-group'); if(!el.value) { group.classList.add('error'); valido = false; } else { group.classList.remove('error'); } });
+        e.preventDefault(); let valido = true; document.querySelectorAll('#cadastroForm [required]').forEach(el => { const group = el.closest('.input-group'); if(!el.value) { group.classList.add('error'); valido = false; } else { group.classList.remove('error'); } });
         const cpf = document.getElementById('cpf'); if(cpf.value.length < 14) { cpf.closest('.input-group').classList.add('error'); valido = false; }
         if(!valido) { document.querySelector('.error').scrollIntoView({behavior: 'smooth', block: 'center'}); return; }
-
-        document.getElementById('loading-overlay').classList.add('active');
-        document.querySelector('.loading-text').innerText = "Salvando cadastro...";
+        document.getElementById('loading-overlay').classList.add('active'); document.querySelector('.loading-text').innerText = "Salvando...";
         
-        const nomeCompleto = document.getElementById('nome').value;
-        const primeiroNome = nomeCompleto.split(' ')[0];
-
-        const dados = { 
-          action: 'salvarCadastro',
-          payload: {
-            nome: nomeCompleto, 
-            cpf: document.getElementById('cpf').value, 
-            nascimento: document.getElementById('nascimento').value, 
-            telefone: document.getElementById('telefone').value, 
-            endereco: document.getElementById('endereco').value, 
-            genero: document.getElementById('genero').value, 
-            equipe: document.getElementById('equipe').value 
-          }
-        };
+        const nomeCompleto = document.getElementById('nome').value; const primeiroNome = nomeCompleto.split(' ')[0];
+        const dados = { action: 'salvarCadastro', payload: { nome: nomeCompleto, cpf: document.getElementById('cpf').value, nascimento: document.getElementById('nascimento').value, telefone: document.getElementById('telefone').value, endereco: document.getElementById('endereco').value, genero: document.getElementById('genero').value, equipe: document.getElementById('equipe').value } };
         
-        fetch(API_URL, { method: 'POST', body: JSON.stringify(dados) })
-          .then(res => res.json())
-          .then(res => { 
+        fetch(API_URL, { method: 'POST', body: JSON.stringify(dados) }).then(res => res.json()).then(res => { 
             document.getElementById('loading-overlay').classList.remove('active'); 
-            if (res.success) { 
-              // SUCESSO: Personaliza e anima
-              document.getElementById('success-name').innerText = primeiroNome;
-              document.getElementById('form-view').classList.add('hidden'); 
-              document.getElementById('success-view').classList.remove('hidden'); 
-              window.scrollTo(0,0);
-              
-              // Dispara confetes CSS (simples)
-              for(let i=0; i<30; i++) {
-                let confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + 'vw';
-                confetti.style.animationDuration = (Math.random() * 2 + 1) + 's';
-                confetti.style.backgroundColor = ['#f00', '#0f0', '#00f', '#ff0', '#0ff'][Math.floor(Math.random()*5)];
-                document.getElementById('success-box-content').appendChild(confetti);
-              }
-
+            if (res.success) { document.getElementById('success-name').innerText = primeiroNome; document.getElementById('form-view').classList.add('hidden'); document.getElementById('success-view').classList.remove('hidden'); window.scrollTo(0,0);
+              for(let i=0; i<30; i++) { let c = document.createElement('div'); c.className = 'confetti'; c.style.left = Math.random()*100+'vw'; c.style.animationDuration = (Math.random()*2+1)+'s'; c.style.backgroundColor = ['#f00','#0f0','#00f','#ff0','#0ff'][Math.floor(Math.random()*5)]; document.getElementById('success-box-content').appendChild(c); }
             } else { mostrarAviso("Atenção", res.message, true); }
-          })
-          .catch(err => { document.getElementById('loading-overlay').classList.remove('active'); mostrarAviso("Erro", "Falha ao enviar. Tente novamente.", true); });
+        }).catch(() => { document.getElementById('loading-overlay').classList.remove('active'); mostrarAviso("Erro", "Falha ao enviar.", true); });
       }
-      function novaInscricao() { 
-        document.getElementById('cadastroForm').reset(); 
-        document.getElementById('nascimento').type = 'text'; 
-        // Remove confetes antigos
-        document.querySelectorAll('.confetti').forEach(el => el.remove());
-        document.getElementById('success-view').classList.add('hidden'); 
-        document.getElementById('admin-view').classList.add('hidden'); 
-        document.getElementById('form-view').classList.remove('hidden'); 
-        window.scrollTo(0,0); 
-      }
+      function novaInscricao() { document.getElementById('cadastroForm').reset(); document.getElementById('nascimento').type = 'text'; document.querySelectorAll('.confetti').forEach(el => el.remove()); document.getElementById('success-view').classList.add('hidden'); document.getElementById('admin-view').classList.add('hidden'); document.getElementById('form-view').classList.remove('hidden'); window.scrollTo(0,0); }
 
-      /* MODAIS */
       function abrirModalInfo() { document.getElementById('modal-info').classList.add('active'); }
       function fecharModalInfo() { document.getElementById('modal-info').classList.remove('active'); }
       function abrirModalAdmin() { document.getElementById('modal-senha').classList.add('active'); document.getElementById('input-senha-modal').value = ''; document.getElementById('erro-senha').style.display = 'none'; document.getElementById('input-senha-modal').focus(); }
       function fecharModalAdmin() { document.getElementById('modal-senha').classList.remove('active'); }
-
       function confirmarLoginAdmin() {
         const senha = document.getElementById('input-senha-modal').value; const btn = document.querySelector('#modal-senha .btn-confirm'); const txt = btn.innerText; btn.innerText = "Verificando...";
-        
-        fetch(`${API_URL}?action=adminLogin&senha=${encodeURIComponent(senha)}`)
-          .then(res => res.json())
-          .then(res => {
-             btn.innerText = txt; 
-             if (res.success) { fecharModalAdmin(); carregarAdmin(res); } 
-             else { document.getElementById('erro-senha').innerText = res.message || "Senha incorreta!"; document.getElementById('erro-senha').style.display = 'block'; } 
-          })
-          .catch(err => { btn.innerText = txt; mostrarAviso("Erro", "Falha de conexão.", true); });
+        fetch(`${API_URL}?action=adminLogin&senha=${encodeURIComponent(senha)}`).then(res => res.json()).then(res => { btn.innerText = txt; if (res.success) { fecharModalAdmin(); carregarAdmin(res); } else { document.getElementById('erro-senha').innerText = res.message || "Senha incorreta!"; document.getElementById('erro-senha').style.display = 'block'; } }).catch(() => { btn.innerText = txt; mostrarAviso("Erro", "Falha de conexão.", true); });
       }
       document.getElementById('input-senha-modal').addEventListener('keyup', e => { if(e.key==='Enter') confirmarLoginAdmin() });
 
-      /* ADMINISTRAÇÃO */
       let dadosAdminCache = [];
       function carregarAdmin(dados) {
         document.getElementById('form-view').classList.add('hidden'); document.getElementById('success-view').classList.add('hidden'); document.getElementById('admin-view').classList.remove('hidden');
@@ -658,89 +528,60 @@
         document.getElementById('cfg-nome').value = cfg.NOME_EVENTO || ""; document.getElementById('cfg-local').value = cfg.LOCAL_EVENTO || ""; document.getElementById('cfg-capa').value = cfg.URL_CAPA || ""; document.getElementById('cfg-logo').value = cfg.URL_LOGO || ""; document.getElementById('cfg-frase').value = cfg.FRASE_MOTIVACIONAL || ""; document.getElementById('cfg-senha').value = cfg.SENHA_ADMIN || "";
         document.getElementById('cfg-regras').value = cfg.REGRAS_EVENTO || "";
         
-        // Carrega Prêmios Dinâmicos
-        const adminPremios = document.getElementById('admin-premios-list');
-        adminPremios.innerHTML = "";
-        let lista = [];
-        try { lista = JSON.parse(cfg.LISTA_PREMIOS); } catch(e){}
-        if(lista.length > 0) {
-          lista.forEach(p => addPremioRow(p.titulo, p.valor));
-        } else {
-          // Se vazio, cria uma linha em branco
-          addPremioRow();
-        }
+        loadAdminPremios(cfg.LISTA_PREMIOS, 'admin-premios-list');
         document.getElementById('cfg-obs-premio').value = cfg.OBS_PREMIACAO || "";
+        loadAdminPremios(cfg.LISTA_PREMIOS_CAT, 'admin-premios-cat-list');
+        document.getElementById('cfg-obs-premio-cat').value = cfg.OBS_PREMIACAO_CAT || "";
       }
 
-      function addPremioRow(titulo = "", valor = "") {
-        const div = document.createElement('div');
-        div.className = 'premio-row';
-        div.innerHTML = `
-          <input type="text" class="config-input p-titulo" placeholder="Título (ex: 1º Lugar Geral)" value="${titulo}">
-          <input type="text" class="config-input p-valor" placeholder="Prêmio (ex: Troféu + R$ 100)" value="${valor}">
-          <button type="button" class="btn-remove" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button>
-        `;
-        document.getElementById('admin-premios-list').appendChild(div);
+      function loadAdminPremios(json, containerId) {
+        const container = document.getElementById(containerId); container.innerHTML = "";
+        let lista = []; try { lista = JSON.parse(json); } catch(e){}
+        if(lista.length > 0) lista.forEach(p => addPremioRow(containerId, p.titulo, p.valor));
+        else addPremioRow(containerId);
+      }
+
+      function addPremioRow(containerId, titulo = "", valor = "") {
+        const div = document.createElement('div'); div.className = 'premio-row';
+        div.innerHTML = `<input type="text" class="config-input p-titulo" placeholder="Título" value="${titulo}"><input type="text" class="config-input p-valor" placeholder="Prêmio" value="${valor}"><button type="button" class="btn-remove" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button>`;
+        document.getElementById(containerId).appendChild(div);
       }
 
       function filtrarTabela() {
-        const filtroCat = document.getElementById('filter-cat').value;
-        const filtroGen = document.getElementById('filter-gen').value;
-        const tbody = document.querySelector('#admin-table tbody'); 
-        tbody.innerHTML = ""; 
-        let count = 0;
-        
+        const filtroCat = document.getElementById('filter-cat').value; const filtroGen = document.getElementById('filter-gen').value;
+        const tbody = document.querySelector('#admin-table tbody'); tbody.innerHTML = ""; let count = 0;
         dadosAdminCache.forEach(linha => {
-          const cat = linha[8]; // Categoria
-          const gen = linha[5]; // Gênero
-          
-          const matchCat = (filtroCat === "Todas" || cat === filtroCat);
-          const matchGen = (filtroGen === "Todos" || gen === filtroGen);
-
-          if (matchCat && matchGen) { 
-            count++;
-            tbody.innerHTML += `<tr><td>${linha[0]}</td><td>${linha[1]}</td><td>${linha[2]}</td><td>${linha[3]}</td><td>${linha[4]}</td><td>${linha[5]}</td><td>${linha[6]}</td><td>${linha[7]}</td><td><strong>${linha[8]}</strong></td><td>${linha[9]}</td></tr>`;
-          }
+          const cat = linha[8]; const gen = linha[5];
+          if ((filtroCat === "Todas" || cat === filtroCat) && (filtroGen === "Todos" || gen === filtroGen)) { count++; tbody.innerHTML += `<tr><td>${linha[0]}</td><td>${linha[1]}</td><td>${linha[2]}</td><td>${linha[3]}</td><td>${linha[4]}</td><td>${linha[5]}</td><td>${linha[6]}</td><td>${linha[7]}</td><td><strong>${linha[8]}</strong></td><td>${linha[9]}</td></tr>`; }
         });
         document.getElementById('admin-total').innerText = count;
       }
+
       function mudarAba(aba) {
         document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active')); document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
         if(aba === 'dashboard') { document.querySelectorAll('.admin-tab')[0].classList.add('active'); document.getElementById('tab-dashboard').classList.add('active'); } 
         else if (aba === 'config') { document.querySelectorAll('.admin-tab')[1].classList.add('active'); document.getElementById('tab-config').classList.add('active'); }
         else if (aba === 'premios') { document.querySelectorAll('.admin-tab')[2].classList.add('active'); document.getElementById('tab-premios').classList.add('active'); }
       }
+
       function salvarConfig() {
-        document.getElementById('loading-overlay').classList.add('active');
-        document.querySelector('.loading-text').innerText = "Salvando...";
+        document.getElementById('loading-overlay').classList.add('active'); document.querySelector('.loading-text').innerText = "Salvando...";
         
-        // Coleta Prêmios Dinâmicos
-        const rows = document.querySelectorAll('.premio-row');
-        const listaPremios = [];
-        rows.forEach(row => {
-          const t = row.querySelector('.p-titulo').value;
-          const v = row.querySelector('.p-valor').value;
-          if(t) listaPremios.push({titulo: t, valor: v});
-        });
+        const getPremios = (id) => {
+          const lista = []; document.querySelectorAll(`#${id} .premio-row`).forEach(row => { const t = row.querySelector('.p-titulo').value; const v = row.querySelector('.p-valor').value; if(t) lista.push({titulo: t, valor: v}); }); return JSON.stringify(lista);
+        };
 
         const novasCfgs = { 
-          NOME_EVENTO: document.getElementById('cfg-nome').value, LOCAL_EVENTO: document.getElementById('cfg-local').value, URL_CAPA: document.getElementById('cfg-capa').value, URL_LOGO: document.getElementById('cfg-logo').value, FRASE_MOTIVACIONAL: document.getElementById('cfg-frase').value, SENHA_ADMIN: document.getElementById('cfg-senha').value,
-          REGRAS_EVENTO: document.getElementById('cfg-regras').value,
-          LISTA_PREMIOS: JSON.stringify(listaPremios),
-          OBS_PREMIACAO: document.getElementById('cfg-obs-premio').value
+          NOME_EVENTO: document.getElementById('cfg-nome').value, LOCAL_EVENTO: document.getElementById('cfg-local').value, URL_CAPA: document.getElementById('cfg-capa').value, URL_LOGO: document.getElementById('cfg-logo').value, FRASE_MOTIVACIONAL: document.getElementById('cfg-frase').value, SENHA_ADMIN: document.getElementById('cfg-senha').value, REGRAS_EVENTO: document.getElementById('cfg-regras').value,
+          LISTA_PREMIOS: getPremios('admin-premios-list'), OBS_PREMIACAO: document.getElementById('cfg-obs-premio').value,
+          LISTA_PREMIOS_CAT: getPremios('admin-premios-cat-list'), OBS_PREMIACAO_CAT: document.getElementById('cfg-obs-premio-cat').value
         };
         const dados = { action: 'salvarConfig', payload: novasCfgs };
         
-        fetch(API_URL, { method: 'POST', body: JSON.stringify(dados) })
-          .then(res => res.json())
-          .then(res => {
+        fetch(API_URL, { method: 'POST', body: JSON.stringify(dados) }).then(res => res.json()).then(res => {
              document.getElementById('loading-overlay').classList.remove('active'); 
-             if(res.success) { 
-               atualizarInterface(novasCfgs);
-               mostrarAviso("Sucesso", "Configurações salvas!", false); 
-             } else { mostrarAviso("Erro", res.message, true); } 
-          })
-          .catch(err => { document.getElementById('loading-overlay').classList.remove('active'); mostrarAviso("Erro", "Erro ao salvar.", true); });
+             if(res.success) { atualizarInterface(novasCfgs); mostrarAviso("Sucesso", "Configurações salvas!", false); } else { mostrarAviso("Erro", res.message, true); } 
+        }).catch(() => { document.getElementById('loading-overlay').classList.remove('active'); mostrarAviso("Erro", "Erro ao salvar.", true); });
       }
     </script>
 </body>
