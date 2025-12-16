@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscrição Corrida</title>
+    <!-- Fontes e Ícones -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+      /* --- CONFIGURAÇÕES VISUAIS --- */
+      :root {
+        --primary: #0d47a1; 
+        --accent: #ff6f00; 
+        --bg: #f4f6f8; 
+        --card: #ffffff;
+        --error: #d32f2f;
+        --success: #2e7d32;
+      }
+      * { box-sizing: border-box; }
+      body {
+        font-family: 'Roboto', sans-serif; background-color: var(--bg);
+        margin: 0; padding: 0; color: #333;
+        display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden;
+      }
+
+      /* CABEÇALHO E CAPA */
+      .header-container { width: 100%; position: relative; line-height: 0; background-color: #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+      .header-image { width: 100%; height: auto; min-height: 150px; object-fit: contain; display: block; }
+      .header-overlay { position: absolute; bottom: 0; left: 0; right: 0; height: 80px; background: linear-gradient(to top, rgba(0,0,0,0.4), transparent); pointer-events: none; }
+      
+      .logo-wrapper { position: relative; margin-top: -60px; margin-bottom: 15px; display: flex; justify-content: center; z-index: 10; padding: 0 20px; }
+      .logo-img { width: 120px; height: 120px; border-radius: 50%; border: 4px solid white; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.15); object-fit: cover; }
+      .logo-placeholder { width: 120px; height: 120px; border-radius: 50%; border: 4px solid white; background: white; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 3rem; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+
+      .container { max-width: 500px; width: 100%; margin: 0 auto; padding: 0 20px 30px; flex: 1; position: relative; z-index: 5; }
+
+      /* TÍTULOS E FRASE MOTIVACIONAL */
+      h1.event-title { text-align: center; color: var(--primary); font-size: 1.5rem; font-weight: 700; margin: 10px 0 5px; text-transform: uppercase; }
+      p.event-subtitle { text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 15px; }
+      
+      .motivational-box { text-align: center; margin: 15px 0 25px; padding: 10px; background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 4px solid var(--accent); }
+      .motivational-text { font-size: 1rem; font-weight: 500; font-style: italic; background: linear-gradient(45deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; animation: pulseText 3s infinite ease-in-out; }
+      @keyframes pulseText { 0% { opacity: 0.8; transform: scale(0.99); } 50% { opacity: 1; transform: scale(1.01); } 100% { opacity: 0.8; transform: scale(0.99); } }
+
+      /* PREMIAÇÃO (CONFIGURÁVEL) */
+      .prizes-box { background: white; border-radius: 10px; padding: 15px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #e0e0e0; border-top: 4px solid var(--primary); }
+      .prizes-title { color: var(--primary); font-weight: bold; margin-bottom: 10px; text-align: center; text-transform: uppercase; font-size: 0.9rem; }
+      .prize-item { display: flex; justify-content: space-between; font-size: 0.85rem; padding: 8px 0; border-bottom: 1px dashed #eee; align-items: center; }
+      .prize-item:last-child { border-bottom: none; }
+      .prize-age { font-weight: 500; color: #555; background: #f0f0f0; padding: 2px 8px; border-radius: 4px; }
+      .prize-value { color: var(--accent); font-weight: bold; text-align: right; flex: 1; margin-left: 10px; }
+
+      /* FORMULÁRIO */
+      .form-card { background: var(--card); border-radius: 15px; padding: 5px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); }
+      
+      .input-group { position: relative; margin-bottom: 15px; border: 1px solid #eee; border-radius: 10px; background: #fafafa; transition: 0.3s; }
+      
+      /* ESTILO DE ERRO */
+      .input-group.error { border: 2px solid var(--error); background: #fff0f0; animation: shake 0.4s ease-in-out; }
+      .input-group.error i { color: var(--error); }
+      @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
+
+      .input-group:focus-within { background: white; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.1); }
+      .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #999; transition: 0.3s; }
+      .input-group:focus-within i { color: var(--primary); }
+      input, select { width: 100%; padding: 16px 16px 16px 45px; border: none; background: transparent; font-size: 1rem; color: #333; outline: none; border-radius: 10px; -webkit-appearance: none; }
+      select { background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 12px auto; }
+      .btn-submit { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary), #1565c0); color: white; border: none; border-radius: 50px; font-size: 1.1rem; font-weight: bold; text-transform: uppercase; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(13, 71, 161, 0.3); transition: transform 0.2s; }
+      .btn-submit:active { transform: scale(0.96); }
+
+      /* BOTÃO FLUTUANTE (FAB) */
+      .fab-info { position: fixed; bottom: 80px; right: 20px; width: 55px; height: 55px; border-radius: 50%; background: var(--accent); color: white; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; z-index: 100; transition: transform 0.2s; }
+      .fab-info:active { transform: scale(0.9); }
+
+      /* PAINEL ADMIN */
+      .admin-panel { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+      .admin-header { background: var(--primary); padding: 15px; display: flex; justify-content: space-between; align-items: center; color: white; }
+      .admin-header h2 { margin: 0; font-size: 1.1rem; }
+      .admin-header button { background: rgba(255,255,255,0.2); border: none; color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+      .admin-tabs { display: flex; border-bottom: 1px solid #eee; background: #f9f9f9; }
+      .admin-tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; color: #666; font-weight: 500; border-bottom: 3px solid transparent; }
+      .admin-tab.active { color: var(--primary); border-bottom-color: var(--primary); background: white; }
+      .admin-content { padding: 20px; }
+      .tab-view { display: none; }
+      .tab-view.active { display: block; }
+      .total-card { text-align: center; padding: 25px; background: linear-gradient(to bottom right, #e3f2fd, #ffffff); border-radius: 15px; border: 1px solid #bbdefb; margin-bottom: 20px; }
+      .total-card h3 { margin: 0 0 10px; color: #555; font-size: 0.9rem; text-transform: uppercase; }
+      .total-number { font-size: 3.5rem; font-weight: 800; color: var(--primary); margin: 0; line-height: 1; }
+      .filter-group label { display: block; font-size: 0.8rem; font-weight: bold; color: #666; margin-bottom: 5px; }
+      .filter-select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; background-color: #fcfcfc; }
+      .btn-print { width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 20px; }
+      .table-responsive { overflow-x: auto; }
+      table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+      th, td { padding: 8px; text-align: left; border-bottom: 1px solid #eee; white-space: nowrap; }
+      th { color: var(--primary); font-weight: bold; background: #f0f4f8; }
+
+      /* MODAL E CONFIG */
+      .config-form label { display: block; font-size: 0.8rem; font-weight: bold; color: #555; margin-bottom: 5px; margin-top: 15px; }
+      .config-input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem; }
+      textarea.config-input { resize: vertical; height: 100px; font-family: sans-serif; }
+      .btn-save-config { background: #4CAF50; color: white; width: 100%; padding: 12px; border: none; border-radius: 8px; margin-top: 20px; font-weight: bold; cursor: pointer; }
+      .config-section-title { margin-top: 25px; border-bottom: 2px solid #eee; padding-bottom: 5px; color: var(--primary); font-weight: bold; }
+
+      /* ESTILO PARA O UPLOAD */
+      .upload-group { display: flex; gap: 10px; }
+      .upload-group .config-input { flex: 1; }
+      .btn-upload { background: var(--primary); color: white; border: none; padding: 0 15px; border-radius: 8px; cursor: pointer; }
+      .btn-upload:hover { background: #1565c0; }
+
+      /* MODAIS */
+      .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(3px); }
+      .modal-overlay.active { opacity: 1; pointer-events: all; }
+      .modal-box { background: white; width: 85%; max-width: 400px; padding: 25px; border-radius: 15px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); transform: scale(0.8); transition: transform 0.3s; max-height: 80vh; overflow-y: auto; }
+      .modal-overlay.active .modal-box { transform: scale(1); }
+      .modal-input { width: 100%; padding: 12px; margin: 15px 0; border: 2px solid #eee; border-radius: 8px; text-align: center; font-size: 1.1rem; letter-spacing: 2px; }
+      .modal-actions { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
+      .btn-modal { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; flex: 1; }
+      .btn-confirm { background: var(--primary); color: white; }
+      .btn-cancel { background: #eee; color: #555; }
+      .info-content { text-align: left; white-space: pre-line; color: #555; line-height: 1.6; max-height: 300px; overflow-y: auto; background: #f9f9f9; padding: 10px; border-radius: 8px; border: 1px solid #eee; }
+
+      .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.98); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+      .loading-overlay.active { opacity: 1; pointer-events: all; }
+      .track-line { width: 80%; max-width: 300px; height: 2px; background: #ddd; position: relative; margin-bottom: 20px; }
+      .runner-icon { font-size: 48px; color: var(--accent); position: absolute; bottom: 0; left: 0; }
+      .active .runner-icon { animation: runRace 1.5s linear infinite; }
+      @keyframes runRace { 0% { left: -10%; transform: scaleX(1); } 49% { transform: scaleX(1); } 50% { left: 110%; transform: scaleX(-1); } 100% { left: -10%; transform: scaleX(-1); } }
+      .loading-text { font-weight: bold; color: var(--primary); font-size: 1.2rem; margin-top: 20px; animation: pulse 1s infinite; }
+
+      .success-box { background: white; padding: 40px 20px; border-radius: 20px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.1); animation: fadeInUp 0.5s ease-out; }
+      @keyframes fadeInUp { from { opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+      .hidden { display: none !important; }
+      footer { text-align: center; padding: 20px; font-size: 0.75rem; color: #999; background: white; border-top: 1px solid #eee; }
+      .dev-credit { font-weight: 500; color: var(--primary); }
+      .admin-toggle { background: none; border: none; color: #ddd; margin-top: 10px; cursor: pointer; font-size: 1.2rem; }
+
+      /* IMPRESSÃO (PDF) */
+      @media print {
+        @page { size: landscape; margin: 1cm; }
+        .header-container, .logo-wrapper, .form-card, footer, .btn-action, #success-view, .admin-toggle, .motivational-box, .modal-overlay, .admin-header button, .admin-tabs, .btn-print, #tab-config, .config-form, .prizes-box, .filter-group, .fab-info, .upload-group .btn-upload { display: none !important; }
+        body, .container { background: white; margin: 0; padding: 0; width: 100%; max-width: 100%; }
+        #admin-view { display: block !important; box-shadow: none; width: 100%; }
+        .admin-panel { box-shadow: none; padding: 0; width: 100%; }
+        .admin-header { background: white; color: black; border-bottom: 2px solid black; padding: 10px; margin-bottom: 20px; display: block; text-align: center; }
+        .admin-header h2 { font-size: 18pt; text-transform: uppercase; }
+        .admin-header::after { content: "Relatório Completo de Inscritos"; display: block; font-size: 14pt; margin-top: 5px; }
+        .total-card { border: 1px solid #000; background: none; page-break-inside: avoid; margin-bottom: 20px; padding: 5px; text-align: left; }
+        .total-number { color: black; font-size: 14pt; display: inline-block; margin-left: 10px; }
+        .total-card h3 { color: black; font-size: 12pt; display: inline-block; margin: 0; }
+        .table-responsive { overflow: visible; }
+        table { font-size: 9pt; border: 1px solid #000; width: 100%; border-collapse: collapse; table-layout: auto; }
+        th { background-color: #ddd !important; color: black; border: 1px solid #000; padding: 4px; text-align: left; -webkit-print-color-adjust: exact; }
+        td { border: 1px solid #000; padding: 4px; word-wrap: break-word; }
+        tr[style*="display: none"] { display: none !important; }
+      }
+    </style>
+</head>
+<body>
+
+    <!-- CABEÇALHO -->
+    <div class="header-container">
+        <div style="height:150px; background:var(--primary);"></div>
+    </div>
+    <div class="logo-wrapper">
+        <div class="logo-placeholder"><i class="fas fa-running"></i></div>
+    </div>
+
+    <!-- BOTÃO FLUTUANTE -->
+    <button class="fab-info" onclick="abrirModalInfo()"><i class="fas fa-info"></i></button>
+
+    <div class="container">
+      <!-- FORMULÁRIO -->
+      <div id="form-view">
+        <h1 class="event-title">Carregando...</h1>
+        <div class="motivational-box" style="display:none;"><p class="motivational-text"></p></div>
+        <p class="event-subtitle">Preencha seus dados para confirmar a presença.</p>
+
+        <div class="prizes-box">
+          <div class="prizes-title"><i class="fas fa-trophy"></i> Premiação por Categoria</div>
+          <div class="prize-item"><span class="prize-age">16 a 29 anos</span> <span class="prize-value" id="pz-16">...</span></div>
+          <div class="prize-item"><span class="prize-age">30 a 39 anos</span> <span class="prize-value" id="pz-30">...</span></div>
+          <div class="prize-item"><span class="prize-age">40 a 49 anos</span> <span class="prize-value" id="pz-40">...</span></div>
+          <div class="prize-item"><span class="prize-age">50 a 59 anos</span> <span class="prize-value" id="pz-50">...</span></div>
+          <div class="prize-item"><span class="prize-age">+60 anos</span> <span class="prize-value" id="pz-60">...</span></div>
+        </div>
+
+        <form id="cadastroForm" class="form-card" onsubmit="enviarDados(event)">
+          <div class="input-group"><i class="fas fa-user"></i><input type="text" id="nome" placeholder="Nome Completo" required></div>
+          <div class="input-group"><i class="fas fa-id-card"></i><input type="text" id="cpf" placeholder="CPF (000.000.000-00)" maxlength="14" oninput="mascaraCPF(this)" required></div>
+          <div class="input-group"><i class="fas fa-calendar-alt"></i><input type="text" id="nascimento" placeholder="Data de Nascimento" onfocus="ativarData(this)" onblur="formatarDataVisual(this)" required></div>
+          <div class="input-group"><i class="fas fa-venus-mars"></i>
+            <select id="genero" required>
+              <option value="" disabled selected>Selecione o Gênero</option>
+              <option value="Masculino">Masculino</option>
+              <option value="Feminino">Feminino</option>
+            </select>
+          </div>
+          <div class="input-group"><i class="fas fa-users"></i><input type="text" id="equipe" placeholder="Nome da Equipe (Opcional)"></div>
+          <div class="input-group"><i class="fas fa-phone-alt"></i><input type="text" id="telefone" placeholder="Telefone / WhatsApp" maxlength="15" oninput="mascaraTelefone(this)" required></div>
+          <div class="input-group"><i class="fas fa-map-marker-alt"></i><input type="text" id="endereco" placeholder="Endereço Completo" required></div>
+          <button type="submit" class="btn-submit">Confirmar Inscrição <i class="fas fa-arrow-right"></i></button>
+        </form>
+      </div>
+
+      <!-- SUCESSO -->
+      <div id="success-view" class="hidden">
+        <div class="success-box">
+          <i class="fas fa-check-circle fa-4x" style="color: #4CAF50; margin-bottom: 20px;"></i>
+          <h2>Sucesso!</h2>
+          <p>Inscrição realizada.</p>
+          <hr style="border:0; border-top:1px solid #eee; margin:20px 0;">
+          <button onclick="novaInscricao()" class="btn-action" style="background:#eee; color:#333;"><i class="fas fa-redo"></i> Nova Inscrição</button>
+        </div>
+      </div>
+
+      <!-- ADMIN -->
+      <div id="admin-view" class="hidden">
+        <div class="admin-panel">
+          <div class="admin-header"><h2><i class="fas fa-cog"></i> Administração</h2><button onclick="novaInscricao()"><i class="fas fa-sign-out-alt"></i> Sair</button></div>
+          <div class="admin-tabs"><div class="admin-tab active" onclick="mudarAba('dashboard')">Dashboard</div><div class="admin-tab" onclick="mudarAba('config')">Configurações</div></div>
+          <div class="admin-content">
+            <div id="tab-dashboard" class="tab-view active">
+              <div class="total-card"><h3>Total de Inscritos (Filtrado)</h3><div class="total-number" id="admin-total">0</div></div>
+              <div class="filter-group">
+                <label>Filtrar por Categoria:</label>
+                <select id="filter-cat" class="filter-select" onchange="filtrarTabela()">
+                  <option value="Todas">Todas as Categorias</option>
+                  <option value="16 a 29 anos">16 a 29 anos</option>
+                  <option value="30 a 39 anos">30 a 39 anos</option>
+                  <option value="40 a 49 anos">40 a 49 anos</option>
+                  <option value="50 a 59 anos">50 a 59 anos</option>
+                  <option value="+60 anos">+60 anos</option>
+                </select>
+              </div>
+              <button onclick="window.print()" class="btn-print"><i class="fas fa-file-pdf"></i> Imprimir Relatório (PDF)</button>
+              <div class="table-responsive"><table id="admin-table"><thead><tr><th>Data</th><th>Nome</th><th>CPF</th><th>Nasc.</th><th>Tel</th><th>Gênero</th><th>Equipe</th><th>Idade</th><th>Cat.</th><th>Endereço</th></tr></thead><tbody></tbody></table></div>
+            </div>
+            
+            <div id="tab-config" class="tab-view">
+              <div class="config-form">
+                <div class="config-section-title">Geral</div>
+                <label>Nome do Evento</label><input type="text" id="cfg-nome" class="config-input">
+                <label>Imagem de Capa</label>
+                <div class="upload-group">
+                  <input type="text" id="cfg-capa" class="config-input" placeholder="Link da imagem...">
+                  <button type="button" class="btn-upload" onclick="document.getElementById('file-capa').click()"><i class="fas fa-cloud-upload-alt"></i></button>
+                  <input type="file" id="file-capa" hidden accept="image/*" onchange="uploadImgBB(this, 'cfg-capa')">
+                </div>
+                <label>Imagem do Logo</label>
+                <div class="upload-group">
+                  <input type="text" id="cfg-logo" class="config-input" placeholder="Link da imagem...">
+                  <button type="button" class="btn-upload" onclick="document.getElementById('file-logo').click()"><i class="fas fa-cloud-upload-alt"></i></button>
+                  <input type="file" id="file-logo" hidden accept="image/*" onchange="uploadImgBB(this, 'cfg-logo')">
+                </div>
+                <label>Frase Motivacional</label><input type="text" id="cfg-frase" class="config-input">
+                <label>Senha do Administrador</label><input type="text" id="cfg-senha" class="config-input">
+                <div class="config-section-title">Informações do Evento</div>
+                <label>Regras e Detalhes</label><textarea id="cfg-regras" class="config-input"></textarea>
+                <div class="config-section-title">Prêmios</div>
+                <label>16 a 29 anos</label><input type="text" id="cfg-p16" class="config-input">
+                <label>30 a 39 anos</label><input type="text" id="cfg-p30" class="config-input">
+                <label>40 a 49 anos</label><input type="text" id="cfg-p40" class="config-input">
+                <label>50 a 59 anos</label><input type="text" id="cfg-p50" class="config-input">
+                <label>+60 anos</label><input type="text" id="cfg-p60" class="config-input">
+                <button onclick="salvarConfig()" class="btn-save-config"><i class="fas fa-save"></i> Salvar Alterações</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAIS -->
+    <div id="modal-senha" class="modal-overlay">
+      <div class="modal-box">
+        <i class="fas fa-lock fa-2x" style="color:var(--primary); margin-bottom:10px;"></i>
+        <h3>Área Restrita</h3>
+        <input type="password" id="input-senha-modal" class="modal-input" placeholder="••••••">
+        <p id="erro-senha" style="color:red; font-size:0.8rem; display:none;">Senha incorreta!</p>
+        <div class="modal-actions"><button class="btn-modal btn-cancel" onclick="fecharModalAdmin()">Cancelar</button><button class="btn-modal btn-confirm" onclick="confirmarLoginAdmin()">Entrar</button></div>
+      </div>
+    </div>
+
+    <div id="modal-info" class="modal-overlay">
+      <div class="modal-box">
+        <i class="fas fa-info-circle fa-2x" style="color:var(--accent); margin-bottom:10px;"></i>
+        <h3>Informações do Evento</h3>
+        <div id="info-texto" class="info-content"></div>
+        <div class="modal-actions"><button class="btn-modal btn-confirm" onclick="fecharModalInfo()">Fechar</button></div>
+      </div>
+    </div>
+
+    <div id="modal-aviso" class="modal-overlay">
+      <div class="modal-box">
+        <i id="aviso-icon" class="fas fa-exclamation-circle fa-2x" style="margin-bottom:10px;"></i>
+        <h3 id="aviso-titulo">Aviso</h3>
+        <p id="aviso-texto" style="color:#666; margin-bottom:20px;"></p>
+        <div class="modal-actions"><button class="btn-modal btn-confirm" onclick="fecharModalAviso()">OK</button></div>
+      </div>
+    </div>
+
+    <div id="loading-overlay" class="loading-overlay"><div class="track-line"><i class="fas fa-running runner-icon"></i></div><div class="loading-text">Processando...</div></div>
+    <footer><p>Desenvolvido por <span class="dev-credit">Thiego Pereira</span></p><button class="admin-toggle" onclick="abrirModalAdmin()"><i class="fas fa-lock"></i></button></footer>
+
+    <script>
+      // --- CONFIGURAÇÃO ---
+      const API_URL = "https://script.google.com/macros/s/AKfycbwAQk2VM3oGr5ZhHge7ZIPy7hzQz-TqFO3u8QeAzjTEaCNURDvJW39Cyk-0MEXwzHRw/exec";
+      const IMGBB_API_KEY = "fa0265b3bfc740c1eb09a7e4d6ec493a";
+
+      // --- INICIALIZAÇÃO ---
+      document.addEventListener('DOMContentLoaded', () => {
+        // Ping silencioso para acordar a API
+        fetch(`${API_URL}?action=ping`).catch(() => {});
+        carregarConfigsIniciais();
+      });
+
+      function carregarConfigsIniciais() {
+        document.querySelector('.loading-text').innerText = "Carregando evento...";
+        document.getElementById('loading-overlay').classList.add('active');
+        
+        fetch(`${API_URL}?action=getConfig`)
+          .then(res => res.json())
+          .then(data => {
+            if(data.status === 'success') {
+              atualizarInterface(data.data);
+            }
+            document.getElementById('loading-overlay').classList.remove('active');
+          })
+          .catch(err => {
+            console.error(err);
+            document.getElementById('loading-overlay').classList.remove('active');
+            // Mesmo com erro, permite usar o form (talvez carregue depois)
+          });
+      }
+
+      function atualizarInterface(cfg) {
+        const headerContainer = document.querySelector('.header-container');
+        if(cfg.URL_CAPA) headerContainer.innerHTML = `<img src="${cfg.URL_CAPA}" class="header-image"><div class="header-overlay"></div>`;
+        
+        const logoWrapper = document.querySelector('.logo-wrapper');
+        if(cfg.URL_LOGO) logoWrapper.innerHTML = `<img src="${cfg.URL_LOGO}" class="logo-img">`;
+        
+        document.querySelector('h1.event-title').innerText = cfg.NOME_EVENTO;
+        
+        const motBox = document.querySelector('.motivational-box');
+        if (cfg.FRASE_MOTIVACIONAL) {
+           motBox.style.display = 'block';
+           motBox.querySelector('.motivational-text').innerHTML = `<i class="fas fa-quote-left" style="font-size:0.8em;"></i> ${cfg.FRASE_MOTIVACIONAL} <i class="fas fa-quote-right" style="font-size:0.8em;"></i>`;
+        } else { motBox.style.display = 'none'; }
+
+        if(document.getElementById('pz-16')) {
+            document.getElementById('pz-16').innerText = cfg.PREMIO_16_29 || "...";
+            document.getElementById('pz-30').innerText = cfg.PREMIO_30_39 || "...";
+            document.getElementById('pz-40').innerText = cfg.PREMIO_40_49 || "...";
+            document.getElementById('pz-50').innerText = cfg.PREMIO_50_59 || "...";
+            document.getElementById('pz-60').innerText = cfg.PREMIO_60_MAIS || "...";
+        }
+        document.getElementById('info-texto').innerText = cfg.REGRAS_EVENTO || "Sem informações adicionais.";
+      }
+
+      /* API IMGBB */
+      function uploadImgBB(input, targetId) {
+        if (input.files && input.files[0]) {
+          const file = input.files[0];
+          const formData = new FormData();
+          formData.append("image", file);
+          formData.append("key", IMGBB_API_KEY);
+
+          document.getElementById('loading-overlay').classList.add('active');
+          document.querySelector('.loading-text').innerText = "A enviar imagem...";
+
+          fetch("https://api.imgbb.com/1/upload", { method: "POST", body: formData })
+            .then(res => res.json())
+            .then(data => {
+              document.getElementById('loading-overlay').classList.remove('active');
+              document.querySelector('.loading-text').innerText = "Processando...";
+              if (data.success) {
+                document.getElementById(targetId).value = data.data.url;
+                mostrarAviso("Sucesso", "Imagem carregada!", false);
+              } else { mostrarAviso("Erro", "Falha ao enviar imagem.", true); }
+            })
+            .catch(error => {
+              document.getElementById('loading-overlay').classList.remove('active');
+              mostrarAviso("Erro", "Erro de conexão ImgBB.", true);
+            });
+        }
+      }
+
+      /* MASCARAS */
+      function mascaraCPF(i) { var v = i.value; if(isNaN(v[v.length-1])){ i.value = v.substring(0, v.length-1); return; } v = v.replace(/\D/g,"").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2"); i.value = v; }
+      function mascaraTelefone(i) { var v = i.value; v = v.replace(/\D/g,"").replace(/^(\d{2})(\d)/g,"($1) $2").replace(/(\d)(\d{4})$/,"$1-$2"); i.value = v; }
+      function ativarData(input) { if (input.value && input.value.includes('/')) { const p = input.value.split('/'); input.value = `${p[2]}-${p[1]}-${p[0]}`; } input.type = 'date'; if(input.showPicker) try{input.showPicker()}catch(e){}; }
+      function formatarDataVisual(input) { const v = input.value; if (v && v.includes('-')) { const p = v.split('-'); input.type = 'text'; input.value = `${p[2]}/${p[1]}/${p[0]}`; } else if (!v) input.type = 'text'; }
+
+      /* AVISO */
+      function mostrarAviso(titulo, texto, isErro = false) {
+        document.getElementById('aviso-titulo').innerText = titulo; document.getElementById('aviso-texto').innerText = texto;
+        const icon = document.getElementById('aviso-icon');
+        if(isErro) { icon.className = "fas fa-times-circle fa-2x"; icon.style.color = "var(--error)"; } else { icon.className = "fas fa-check-circle fa-2x"; icon.style.color = "var(--success)"; }
+        document.getElementById('modal-aviso').classList.add('active');
+      }
+      function fecharModalAviso() { document.getElementById('modal-aviso').classList.remove('active'); }
+
+      /* LOGICA ENVIO (POST) */
+      function enviarDados(e) {
+        e.preventDefault(); 
+        let valido = true; const requireds = document.querySelectorAll('#cadastroForm [required]');
+        requireds.forEach(el => { const group = el.closest('.input-group'); if(!el.value) { group.classList.add('error'); valido = false; } else { group.classList.remove('error'); } });
+        const cpf = document.getElementById('cpf'); if(cpf.value.length < 14) { cpf.closest('.input-group').classList.add('error'); valido = false; }
+        if(!valido) { document.querySelector('.error').scrollIntoView({behavior: 'smooth', block: 'center'}); return; }
+
+        document.getElementById('loading-overlay').classList.add('active');
+        document.querySelector('.loading-text').innerText = "Salvando cadastro...";
+        
+        const dados = { 
+          action: 'salvarCadastro',
+          payload: {
+            nome: document.getElementById('nome').value, cpf: document.getElementById('cpf').value, nascimento: document.getElementById('nascimento').value, telefone: document.getElementById('telefone').value, endereco: document.getElementById('endereco').value, genero: document.getElementById('genero').value, equipe: document.getElementById('equipe').value 
+          }
+        };
+        
+        fetch(API_URL, { method: 'POST', body: JSON.stringify(dados) })
+          .then(res => res.json())
+          .then(res => { 
+            document.getElementById('loading-overlay').classList.remove('active'); 
+            if (res.success) { document.getElementById('form-view').classList.add('hidden'); document.getElementById('success-view').classList.remove('hidden'); window.scrollTo(0,0); } else { mostrarAviso("Atenção", res.message, true); }
+          })
+          .catch(err => { document.getElementById('loading-overlay').classList.remove('active'); mostrarAviso("Erro", "Falha ao enviar. Tente novamente.", true); });
+      }
+      function novaInscricao() { document.getElementById('cadastroForm').reset(); document.getElementById('nascimento').type = 'text'; document.getElementById('success-view').classList.add('hidden'); document.getElementById('admin-view').classList.add('hidden'); document.getElementById('form-view').classList.remove('hidden'); window.scrollTo(0,0); }
+
+      /* MODAIS */
+      function abrirModalInfo() { document.getElementById('modal-info').classList.add('active'); }
+      function fecharModalInfo() { document.getElementById('modal-info').classList.remove('active'); }
+      function abrirModalAdmin() { document.getElementById('modal-senha').classList.add('active'); document.getElementById('input-senha-modal').value = ''; document.getElementById('erro-senha').style.display = 'none'; document.getElementById('input-senha-modal').focus(); }
+      function fecharModalAdmin() { document.getElementById('modal-senha').classList.remove('active'); }
+
+      function confirmarLoginAdmin() {
+        const senha = document.getElementById('input-senha-modal').value; const btn = document.querySelector('#modal-senha .btn-confirm'); const txt = btn.innerText; btn.innerText = "Verificando...";
+        
+        fetch(`${API_URL}?action=adminLogin&senha=${encodeURIComponent(senha)}`)
+          .then(res => res.json())
+          .then(res => {
+             btn.innerText = txt; 
+             if (res.success) { fecharModalAdmin(); carregarAdmin(res); } 
+             else { document.getElementById('erro-senha').innerText = res.message || "Senha incorreta!"; document.getElementById('erro-senha').style.display = 'block'; } 
+          })
+          .catch(err => { btn.innerText = txt; mostrarAviso("Erro", "Falha de conexão.", true); });
+      }
+      document.getElementById('input-senha-modal').addEventListener('keyup', e => { if(e.key==='Enter') confirmarLoginAdmin() });
+
+      /* ADMINISTRAÇÃO */
+      let dadosAdminCache = [];
+      function carregarAdmin(dados) {
+        document.getElementById('form-view').classList.add('hidden'); document.getElementById('success-view').classList.add('hidden'); document.getElementById('admin-view').classList.remove('hidden');
+        dadosAdminCache = dados.registros; filtrarTabela();
+        const cfg = dados.configsAtuais;
+        document.getElementById('cfg-nome').value = cfg.NOME_EVENTO || ""; document.getElementById('cfg-capa').value = cfg.URL_CAPA || ""; document.getElementById('cfg-logo').value = cfg.URL_LOGO || ""; document.getElementById('cfg-frase').value = cfg.FRASE_MOTIVACIONAL || ""; document.getElementById('cfg-senha').value = cfg.SENHA_ADMIN || "";
+        document.getElementById('cfg-regras').value = cfg.REGRAS_EVENTO || "";
+        document.getElementById('cfg-p16').value = cfg.PREMIO_16_29 || ""; document.getElementById('cfg-p30').value = cfg.PREMIO_30_39 || ""; document.getElementById('cfg-p40').value = cfg.PREMIO_40_49 || ""; document.getElementById('cfg-p50').value = cfg.PREMIO_50_59 || ""; document.getElementById('cfg-p60').value = cfg.PREMIO_60_MAIS || "";
+      }
+      function filtrarTabela() {
+        const filtro = document.getElementById('filter-cat').value; const tbody = document.querySelector('#admin-table tbody'); tbody.innerHTML = ""; let count = 0;
+        dadosAdminCache.forEach(linha => {
+          if (filtro === "Todas" || linha[8] === filtro) { 
+            count++;
+            tbody.innerHTML += `<tr><td>${linha[0]}</td><td>${linha[1]}</td><td>${linha[2]}</td><td>${linha[3]}</td><td>${linha[4]}</td><td>${linha[5]}</td><td>${linha[6]}</td><td>${linha[7]}</td><td><strong>${linha[8]}</strong></td><td>${linha[9]}</td></tr>`;
+          }
+        });
+        document.getElementById('admin-total').innerText = count;
+      }
+      function mudarAba(aba) {
+        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active')); document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
+        if(aba === 'dashboard') { document.querySelectorAll('.admin-tab')[0].classList.add('active'); document.getElementById('tab-dashboard').classList.add('active'); } else { document.querySelectorAll('.admin-tab')[1].classList.add('active'); document.getElementById('tab-config').classList.add('active'); }
+      }
+      function salvarConfig() {
+        document.getElementById('loading-overlay').classList.add('active');
+        document.querySelector('.loading-text').innerText = "Salvando...";
+        
+        const novasCfgs = { 
+          NOME_EVENTO: document.getElementById('cfg-nome').value, URL_CAPA: document.getElementById('cfg-capa').value, URL_LOGO: document.getElementById('cfg-logo').value, FRASE_MOTIVACIONAL: document.getElementById('cfg-frase').value, SENHA_ADMIN: document.getElementById('cfg-senha').value,
+          REGRAS_EVENTO: document.getElementById('cfg-regras').value,
+          PREMIO_16_29: document.getElementById('cfg-p16').value, PREMIO_30_39: document.getElementById('cfg-p30').value, PREMIO_40_49: document.getElementById('cfg-p40').value, PREMIO_50_59: document.getElementById('cfg-p50').value, PREMIO_60_MAIS: document.getElementById('cfg-p60').value
+        };
+        const dados = { action: 'salvarConfig', payload: novasCfgs };
+        
+        fetch(API_URL, { method: 'POST', body: JSON.stringify(dados) })
+          .then(res => res.json())
+          .then(res => {
+             document.getElementById('loading-overlay').classList.remove('active'); 
+             if(res.success) { 
+               atualizarInterface(novasCfgs);
+               mostrarAviso("Sucesso", "Configurações salvas!", false); 
+             } else { mostrarAviso("Erro", res.message, true); } 
+          })
+          .catch(err => { document.getElementById('loading-overlay').classList.remove('active'); mostrarAviso("Erro", "Erro ao salvar.", true); });
+      }
+    </script>
+</body>
+</html>
