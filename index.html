@@ -54,14 +54,10 @@
 
       /* FORMULÁRIO */
       .form-card { background: var(--card); border-radius: 15px; padding: 5px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); }
-      
       .input-group { position: relative; margin-bottom: 15px; border: 1px solid #eee; border-radius: 10px; background: #fafafa; transition: 0.3s; }
-      
-      /* ESTILO DE ERRO */
       .input-group.error { border: 2px solid var(--error); background: #fff0f0; animation: shake 0.4s ease-in-out; }
       .input-group.error i { color: var(--error); }
       @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
-
       .input-group:focus-within { background: white; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.1); }
       .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #999; transition: 0.3s; }
       .input-group:focus-within i { color: var(--primary); }
@@ -88,8 +84,13 @@
       .total-card { text-align: center; padding: 25px; background: linear-gradient(to bottom right, #e3f2fd, #ffffff); border-radius: 15px; border: 1px solid #bbdefb; margin-bottom: 20px; }
       .total-card h3 { margin: 0 0 10px; color: #555; font-size: 0.9rem; text-transform: uppercase; }
       .total-number { font-size: 3.5rem; font-weight: 800; color: var(--primary); margin: 0; line-height: 1; }
+      
+      /* NOVOS FILTROS FLEXBOX */
+      .filters-container { display: flex; gap: 10px; margin-bottom: 15px; }
+      .filter-group { flex: 1; }
       .filter-group label { display: block; font-size: 0.8rem; font-weight: bold; color: #666; margin-bottom: 5px; }
       .filter-select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; background-color: #fcfcfc; }
+      
       .btn-print { width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 20px; }
       .table-responsive { overflow-x: auto; }
       table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
@@ -102,8 +103,6 @@
       textarea.config-input { resize: vertical; height: 100px; font-family: sans-serif; }
       .btn-save-config { background: #4CAF50; color: white; width: 100%; padding: 12px; border: none; border-radius: 8px; margin-top: 20px; font-weight: bold; cursor: pointer; }
       .config-section-title { margin-top: 25px; border-bottom: 2px solid #eee; padding-bottom: 5px; color: var(--primary); font-weight: bold; }
-
-      /* ESTILO PARA O UPLOAD */
       .upload-group { display: flex; gap: 10px; }
       .upload-group .config-input { flex: 1; }
       .btn-upload { background: var(--primary); color: white; border: none; padding: 0 15px; border-radius: 8px; cursor: pointer; }
@@ -139,7 +138,7 @@
       /* IMPRESSÃO (PDF) */
       @media print {
         @page { size: landscape; margin: 1cm; }
-        .header-container, .logo-wrapper, .form-card, footer, .btn-action, #success-view, .admin-toggle, .motivational-box, .modal-overlay, .admin-header button, .admin-tabs, .btn-print, #tab-config, .config-form, .prizes-box, .filter-group, .fab-info, .upload-group .btn-upload { display: none !important; }
+        .header-container, .logo-wrapper, .form-card, footer, .btn-action, #success-view, .admin-toggle, .motivational-box, .modal-overlay, .admin-header button, .admin-tabs, .btn-print, #tab-config, .config-form, .prizes-box, .filters-container, .fab-info, .upload-group .btn-upload { display: none !important; }
         body, .container { background: white; margin: 0; padding: 0; width: 100%; max-width: 100%; }
         #admin-view { display: block !important; box-shadow: none; width: 100%; }
         .admin-panel { box-shadow: none; padding: 0; width: 100%; }
@@ -223,17 +222,30 @@
           <div class="admin-content">
             <div id="tab-dashboard" class="tab-view active">
               <div class="total-card"><h3>Total de Inscritos (Filtrado)</h3><div class="total-number" id="admin-total">0</div></div>
-              <div class="filter-group">
-                <label>Filtrar por Categoria:</label>
-                <select id="filter-cat" class="filter-select" onchange="filtrarTabela()">
-                  <option value="Todas">Todas as Categorias</option>
-                  <option value="16 a 29 anos">16 a 29 anos</option>
-                  <option value="30 a 39 anos">30 a 39 anos</option>
-                  <option value="40 a 49 anos">40 a 49 anos</option>
-                  <option value="50 a 59 anos">50 a 59 anos</option>
-                  <option value="+60 anos">+60 anos</option>
-                </select>
+              
+              <!-- FILTROS DUPLOS -->
+              <div class="filters-container">
+                <div class="filter-group">
+                  <label>Filtrar por Categoria:</label>
+                  <select id="filter-cat" class="filter-select" onchange="filtrarTabela()">
+                    <option value="Todas">Todas</option>
+                    <option value="16 a 29 anos">16 a 29 anos</option>
+                    <option value="30 a 39 anos">30 a 39 anos</option>
+                    <option value="40 a 49 anos">40 a 49 anos</option>
+                    <option value="50 a 59 anos">50 a 59 anos</option>
+                    <option value="+60 anos">+60 anos</option>
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label>Filtrar por Gênero:</label>
+                  <select id="filter-gen" class="filter-select" onchange="filtrarTabela()">
+                    <option value="Todos">Todos</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Feminino">Feminino</option>
+                  </select>
+                </div>
               </div>
+
               <button onclick="window.print()" class="btn-print"><i class="fas fa-file-pdf"></i> Imprimir Relatório (PDF)</button>
               <div class="table-responsive"><table id="admin-table"><thead><tr><th>Data</th><th>Nome</th><th>CPF</th><th>Nasc.</th><th>Tel</th><th>Gênero</th><th>Equipe</th><th>Idade</th><th>Cat.</th><th>Endereço</th></tr></thead><tbody></tbody></table></div>
             </div>
@@ -462,9 +474,20 @@
         document.getElementById('cfg-p16').value = cfg.PREMIO_16_29 || ""; document.getElementById('cfg-p30').value = cfg.PREMIO_30_39 || ""; document.getElementById('cfg-p40').value = cfg.PREMIO_40_49 || ""; document.getElementById('cfg-p50').value = cfg.PREMIO_50_59 || ""; document.getElementById('cfg-p60').value = cfg.PREMIO_60_MAIS || "";
       }
       function filtrarTabela() {
-        const filtro = document.getElementById('filter-cat').value; const tbody = document.querySelector('#admin-table tbody'); tbody.innerHTML = ""; let count = 0;
+        const filtroCat = document.getElementById('filter-cat').value;
+        const filtroGen = document.getElementById('filter-gen').value;
+        const tbody = document.querySelector('#admin-table tbody'); 
+        tbody.innerHTML = ""; 
+        let count = 0;
+        
         dadosAdminCache.forEach(linha => {
-          if (filtro === "Todas" || linha[8] === filtro) { 
+          const cat = linha[8]; // Categoria
+          const gen = linha[5]; // Gênero
+          
+          const matchCat = (filtroCat === "Todas" || cat === filtroCat);
+          const matchGen = (filtroGen === "Todos" || gen === filtroGen);
+
+          if (matchCat && matchGen) { 
             count++;
             tbody.innerHTML += `<tr><td>${linha[0]}</td><td>${linha[1]}</td><td>${linha[2]}</td><td>${linha[3]}</td><td>${linha[4]}</td><td>${linha[5]}</td><td>${linha[6]}</td><td>${linha[7]}</td><td><strong>${linha[8]}</strong></td><td>${linha[9]}</td></tr>`;
           }
