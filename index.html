@@ -2,214 +2,219 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Inscrição Corrida</title>
     <!-- Fontes e Ícones -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
       /* --- CONFIGURAÇÕES VISUAIS --- */
       :root {
         --primary: #0d47a1; 
+        --primary-light: #5472d3;
         --accent: #ff6f00; 
-        --bg: #f4f6f8; 
-        --card: #ffffff;
+        --accent-glow: rgba(255, 111, 0, 0.4);
+        --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        --glass-bg: rgba(255, 255, 255, 0.85);
+        --glass-border: rgba(255, 255, 255, 0.9);
+        --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
         --error: #d32f2f;
         --success: #2e7d32;
       }
-      * { box-sizing: border-box; }
+      
+      * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+      
       body {
-        font-family: 'Roboto', sans-serif; background-color: var(--bg);
-        margin: 0; padding: 0; color: #333;
-        display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden;
+        font-family: 'Roboto', sans-serif;
+        background: var(--bg-gradient);
+        background-attachment: fixed;
+        margin: 0; padding: 0;
+        color: #333;
+        display: flex; flex-direction: column; min-height: 100vh;
+        overflow-x: hidden;
       }
 
-      /* CABEÇALHO E CAPA */
-      .header-container { width: 100%; position: relative; line-height: 0; background-color: #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-      .header-image { width: 100%; height: auto; min-height: 150px; object-fit: contain; display: block; }
-      .header-overlay { position: absolute; bottom: 0; left: 0; right: 0; height: 80px; background: linear-gradient(to top, rgba(0,0,0,0.4), transparent); pointer-events: none; }
+      /* --- SPLASH SCREEN --- */
+      #splash-screen {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: white;
+        z-index: 9999;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+      }
       
-      .logo-wrapper { position: relative; margin-top: -60px; margin-bottom: 15px; display: flex; justify-content: center; z-index: 10; padding: 0 20px; }
-      .logo-img { width: 120px; height: 120px; border-radius: 50%; border: 4px solid white; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.15); object-fit: cover; }
-      .logo-placeholder { width: 120px; height: 120px; border-radius: 50%; border: 4px solid white; background: white; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 3rem; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+      .splash-logo {
+        width: 100px; height: 100px;
+        background: var(--primary);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        color: white; font-size: 40px;
+        box-shadow: 0 0 0 0 rgba(13, 71, 161, 0.7);
+        animation: pulse-white 2s infinite;
+      }
+      
+      @keyframes pulse-white {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(13, 71, 161, 0.7); }
+        70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(13, 71, 161, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(13, 71, 161, 0); }
+      }
+      
+      .splash-hidden { opacity: 0; pointer-events: none; transform: scale(1.1); }
 
-      .container { max-width: 500px; width: 100%; margin: 0 auto; padding: 0 20px 30px; flex: 1; position: relative; z-index: 5; }
+      /* --- HEADER --- */
+      .header-container { width: 100%; height: 280px; position: relative; overflow: hidden; border-radius: 0 0 30px 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+      .header-image { width: 100%; height: 100%; object-fit: cover; animation: zoomInHeader 20s infinite alternate; }
+      @keyframes zoomInHeader { from { transform: scale(1); } to { transform: scale(1.1); } }
+      .header-overlay { position: absolute; top:0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(13, 71, 161, 0.1), rgba(0,0,0,0.6)); }
+      
+      .logo-wrapper { position: relative; margin-top: -75px; display: flex; justify-content: center; z-index: 10; padding: 0 20px; animation: dropIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; animation-delay: 0.5s; opacity: 0; }
+      @keyframes dropIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-      /* TÍTULOS E TEXTOS */
-      h1.event-title { text-align: center; color: var(--primary); font-size: 1.5rem; font-weight: 700; margin: 10px 0 5px; text-transform: uppercase; }
-      
-      /* LOCAL DO EVENTO */
-      .event-location { text-align: center; color: #555; font-size: 0.95rem; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 6px; }
-      .event-location i { color: var(--accent); }
+      .logo-img, .logo-placeholder { width: 140px; height: 140px; border-radius: 50%; border: 6px solid white; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.2); object-fit: cover; }
+      .logo-placeholder { display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 3.5rem; }
 
-      p.event-subtitle { text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 15px; }
-      
-      .motivational-box { text-align: center; margin: 15px 0 25px; padding: 10px; background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 4px solid var(--accent); }
-      .motivational-text { font-size: 1rem; font-weight: 500; font-style: italic; background: linear-gradient(45deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; animation: pulseText 3s infinite ease-in-out; }
-      @keyframes pulseText { 0% { opacity: 0.8; transform: scale(0.99); } 50% { opacity: 1; transform: scale(1.01); } 100% { opacity: 0.8; transform: scale(0.99); } }
+      .container { max-width: 550px; width: 100%; margin: 0 auto; padding: 10px 20px 40px; flex: 1; position: relative; z-index: 5; }
 
-      /* --- PREMIAÇÃO (DESIGN CENTRALIZADO) --- */
-      .prizes-box { 
-        background: white; 
-        border-radius: 12px; 
-        padding: 20px; 
-        margin-bottom: 25px; 
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-        border: 1px solid #eee; 
-        position: relative;
-        overflow: hidden;
-      }
-      .prizes-box::before { content: ''; position: absolute; top:0; left:0; width: 100%; height: 4px; background: var(--primary); }
+      /* TIPOGRAFIA */
+      h1.event-title { text-align: center; color: var(--primary); font-family: 'Montserrat', sans-serif; font-size: 1.8rem; font-weight: 800; margin: 15px 0 5px; text-transform: uppercase; letter-spacing: -0.5px; text-shadow: 1px 1px 0px rgba(255,255,255,0.5); }
+      .event-location { text-align: center; color: #666; font-size: 1rem; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 500; }
+      .event-location i { color: var(--accent); animation: bouncePin 2s infinite; }
+      @keyframes bouncePin { 0%, 100% {transform:translateY(0);} 50% {transform:translateY(-5px);} }
 
-      .prizes-title { 
-        color: var(--primary); 
-        font-weight: 800; 
-        margin-bottom: 15px; 
-        text-align: center; 
-        text-transform: uppercase; 
-        font-size: 1rem; 
-        letter-spacing: 0.5px;
-      }
+      /* MOTIVACIONAL */
+      .motivational-box { text-align: center; margin: 0 0 25px; padding: 15px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); border-radius: 15px; box-shadow: 0 5px 15px rgba(13, 71, 161, 0.2); color: white; transform: scale(1); transition: transform 0.3s; }
+      .motivational-box:hover { transform: scale(1.02); }
+      .motivational-text { font-size: 1.1rem; font-weight: 600; font-style: italic; margin: 0; font-family: 'Montserrat', sans-serif; }
       
-      .prize-list { margin-bottom: 10px; }
+      /* PREMIAÇÃO */
+      .prizes-box { background: var(--glass-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px 20px; margin-bottom: 25px; box-shadow: var(--shadow); position: relative; overflow: hidden; animation: boxFadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+      .prizes-box:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(13, 71, 161, 0.15); }
+      .prizes-box::before { content: ''; position: absolute; top:0; left:0; width: 6px; height: 100%; background: var(--accent); }
+      .prizes-title { color: var(--primary); font-family: 'Montserrat', sans-serif; font-weight: 800; margin-bottom: 20px; text-align: left; padding-left: 10px; text-transform: uppercase; font-size: 1.1rem; letter-spacing: 1px; border-bottom: 2px solid rgba(0,0,0,0.05); padding-bottom: 10px; }
+      .prize-item { display: flex; flex-direction: row; align-items: center; justify-content: center; padding: 12px 10px; background: white; margin-bottom: 10px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); transition: transform 0.2s; opacity: 0; animation: itemSlideIn 0.5s ease-out forwards; gap: 10px; flex-wrap: wrap; }
+      .prize-item:hover { transform: translateX(5px); }
+      .prize-item:nth-child(1) { animation-delay: 0.2s; }
+      .prize-item:nth-child(2) { animation-delay: 0.3s; }
+      .prize-item:nth-child(3) { animation-delay: 0.4s; }
+      .prize-item:nth-child(4) { animation-delay: 0.5s; }
+      .prize-item:nth-child(5) { animation-delay: 0.6s; }
+      .prize-age { font-weight: 700; color: white; background: var(--primary); padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; min-width: 100px; text-align: center; box-shadow: 0 2px 5px rgba(13, 71, 161, 0.3); }
+      .prize-value { color: #444; font-weight: 700; text-align: left; font-size: 0.95rem; }
+      .prize-obs { font-size: 0.85rem; color: #555; text-align: center; margin-top: 15px; background: #fff3e0; padding: 12px; border-radius: 10px; border-left: 4px solid var(--accent); }
       
-      .prize-item { 
-        display: flex; 
-        flex-direction: row; 
-        align-items: center; 
-        justify-content: center; /* CENTRALIZADO AQUI */
-        padding: 8px 0; 
-        border-bottom: 1px solid #f5f5f5; 
-        gap: 12px; 
-        flex-wrap: wrap; 
-      }
-      .prize-item:last-child { border-bottom: none; }
-      
-      .prize-age { 
-        font-weight: 700; 
-        color: var(--primary); 
-        background: rgba(13, 71, 161, 0.08); 
-        padding: 6px 12px; 
-        border-radius: 20px; 
-        font-size: 0.85rem;
-        white-space: nowrap; 
-        text-align: center;
-      }
-      
-      .prize-value { 
-        color: #333; 
-        font-weight: 500; 
-        text-align: left; 
-        font-size: 0.9rem;
-        line-height: 1.3;
-      }
-      
-      .prize-obs { 
-        font-size: 0.8rem; 
-        color: #666; 
-        text-align: center; 
-        margin-top: 15px; 
-        background: #fff8e1; 
-        padding: 10px;
-        border-radius: 8px;
-        border: 1px solid #ffe082;
-        white-space: pre-line; 
-      }
+      @keyframes boxFadeInUp { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+      @keyframes itemSlideIn { from { opacity: 0; transform: translateX(-15px); } to { opacity: 1; transform: translateX(0); } }
 
       /* FORMULÁRIO */
-      .form-card { background: var(--card); border-radius: 15px; padding: 5px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); }
-      .input-group { position: relative; margin-bottom: 15px; border: 1px solid #eee; border-radius: 10px; background: #fafafa; transition: 0.3s; }
-      .input-group.error { border: 2px solid var(--error); background: #fff0f0; animation: shake 0.4s ease-in-out; }
+      .form-card { background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 25px; padding: 25px; box-shadow: var(--shadow); }
+      .input-group { position: relative; margin-bottom: 20px; background: white; border-radius: 12px; transition: 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.02); border: 2px solid transparent; }
+      .input-group:focus-within { border-color: var(--primary); box-shadow: 0 4px 12px rgba(13, 71, 161, 0.15); transform: translateY(-2px); }
+      .input-group.error { border-color: var(--error); animation: shake 0.4s ease-in-out; }
       .input-group.error i { color: var(--error); }
       @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
-      .input-group:focus-within { background: white; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.1); }
-      .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #999; transition: 0.3s; }
+      .input-group i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #aaa; font-size: 1.1rem; transition: 0.3s; }
       .input-group:focus-within i { color: var(--primary); }
-      input, select { width: 100%; padding: 16px 16px 16px 45px; border: none; background: transparent; font-size: 1rem; color: #333; outline: none; border-radius: 10px; -webkit-appearance: none; }
-      select { background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 12px auto; }
-      .btn-submit { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary), #1565c0); color: white; border: none; border-radius: 50px; font-size: 1.1rem; font-weight: bold; text-transform: uppercase; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(13, 71, 161, 0.3); transition: transform 0.2s; }
-      .btn-submit:active { transform: scale(0.96); }
+      input, select { width: 100%; padding: 18px 18px 18px 50px; border: none; background: transparent; font-size: 1rem; color: #333; outline: none; border-radius: 12px; -webkit-appearance: none; font-weight: 500; }
+      .btn-submit { width: 100%; padding: 18px; background: linear-gradient(135deg, var(--primary), #1565c0); color: white; border: none; border-radius: 50px; font-size: 1.2rem; font-weight: 800; font-family: 'Montserrat', sans-serif; text-transform: uppercase; cursor: pointer; margin-top: 15px; box-shadow: 0 10px 20px rgba(13, 71, 161, 0.3); transition: all 0.3s; position: relative; overflow: hidden; }
+      .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(13, 71, 161, 0.4); }
+      .btn-submit:active { transform: scale(0.98); }
+      .btn-submit::after { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: shine 3s infinite; }
+      @keyframes shine { 100% { left: 100%; } }
 
       /* BOTÃO FLUTUANTE (FAB) */
-      .fab-info { position: fixed; bottom: 80px; right: 20px; width: 55px; height: 55px; border-radius: 50%; background: var(--accent); color: white; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; z-index: 100; transition: transform 0.2s; }
-      .fab-info:active { transform: scale(0.9); }
+      .fab-info { position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #ff9100); color: white; border: none; box-shadow: 0 4px 15px rgba(255, 111, 0, 0.4); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; z-index: 100; transition: transform 0.3s, box-shadow 0.3s; }
+      .fab-info:hover { transform: scale(1.1) rotate(10deg); }
 
-      /* PAINEL ADMIN */
-      .admin-panel { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
-      .admin-header { background: var(--primary); padding: 15px; display: flex; justify-content: space-between; align-items: center; color: white; }
-      .admin-header h2 { margin: 0; font-size: 1.1rem; }
-      .admin-header button { background: rgba(255,255,255,0.2); border: none; color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
-      .admin-tabs { display: flex; border-bottom: 1px solid #eee; background: #f9f9f9; overflow-x: auto; }
-      .admin-tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; color: #666; font-weight: 500; border-bottom: 3px solid transparent; white-space: nowrap; }
-      .admin-tab.active { color: var(--primary); border-bottom-color: var(--primary); background: white; }
-      .admin-content { padding: 20px; }
+      /* ADMIN */
+      .admin-panel { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+      .admin-header { background: linear-gradient(to right, var(--primary), #1565c0); padding: 20px; display: flex; justify-content: space-between; align-items: center; color: white; }
+      .admin-tabs { background: #f0f2f5; padding: 10px; display: flex; gap: 10px; overflow-x: auto; }
+      .admin-tab { padding: 10px 20px; border-radius: 20px; color: #666; font-weight: 600; cursor: pointer; transition: 0.3s; border: none; background: transparent; white-space: nowrap; }
+      .admin-tab.active { background: white; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+      .admin-content { padding: 25px; }
       .tab-view { display: none; }
-      .tab-view.active { display: block; }
-      .total-card { text-align: center; padding: 25px; background: linear-gradient(to bottom right, #e3f2fd, #ffffff); border-radius: 15px; border: 1px solid #bbdefb; margin-bottom: 20px; }
-      .total-card h3 { margin: 0 0 10px; color: #555; font-size: 0.9rem; text-transform: uppercase; }
-      .total-number { font-size: 3.5rem; font-weight: 800; color: var(--primary); margin: 0; line-height: 1; }
+      .tab-view.active { display: block; animation: fadeIn 0.3s; }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      .total-card { text-align: center; padding: 30px; background: linear-gradient(135deg, #e3f2fd, #bbdefb); border-radius: 20px; border: none; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(33, 150, 243, 0.15); color: var(--primary); }
+      .total-number { font-size: 4rem; font-weight: 800; line-height: 1; text-shadow: 2px 2px 0 rgba(255,255,255,0.5); }
       .filters-container { display: flex; gap: 10px; margin-bottom: 15px; }
       .filter-group { flex: 1; }
-      .filter-group label { display: block; font-size: 0.8rem; font-weight: bold; color: #666; margin-bottom: 5px; }
       .filter-select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; background-color: #fcfcfc; }
-      .btn-print { width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 20px; }
-      .table-responsive { overflow-x: auto; }
-      table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-      th, td { padding: 8px; text-align: left; border-bottom: 1px solid #eee; white-space: nowrap; }
-      th { color: var(--primary); font-weight: bold; background: #f0f4f8; }
-
-      /* MODAL E CONFIG */
-      .config-form label { display: block; font-size: 0.8rem; font-weight: bold; color: #555; margin-bottom: 5px; margin-top: 15px; }
-      .config-input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem; }
-      textarea.config-input { resize: vertical; height: 100px; font-family: sans-serif; }
-      .btn-save-config { background: #4CAF50; color: white; width: 100%; padding: 12px; border: none; border-radius: 8px; margin-top: 20px; font-weight: bold; cursor: pointer; }
-      .config-section-title { margin-top: 25px; border-bottom: 2px solid #eee; padding-bottom: 5px; color: var(--primary); font-weight: bold; }
+      .btn-print { width: 100%; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(255, 111, 0, 0.3); }
+      
+      .config-input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 0.95rem; background: #f9f9f9; }
+      .btn-save-config { background: #4CAF50; color: white; width: 100%; padding: 15px; border: none; border-radius: 12px; margin-top: 25px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3); }
       .upload-group { display: flex; gap: 10px; }
-      .upload-group .config-input { flex: 1; }
-      .btn-upload { background: var(--primary); color: white; border: none; padding: 0 15px; border-radius: 8px; cursor: pointer; }
-      .btn-upload:hover { background: #1565c0; }
-
-      /* ESTILOS PARA LINHAS DE PRÊMIOS NO ADMIN */
-      .premio-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
-      .premio-row input { flex: 1; }
-      .btn-remove { background: #ff5252; color: white; border: none; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-      .btn-add { background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; margin-bottom: 15px; display: inline-flex; align-items: center; gap: 5px; }
+      .btn-upload { background: var(--primary); color: white; border: none; padding: 0 15px; border-radius: 10px; cursor: pointer; }
+      .premio-row { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; }
+      .btn-remove { background: #ff5252; color: white; border: none; width: 42px; height: 42px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+      .btn-add { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 30px; cursor: pointer; font-size: 0.85rem; margin-bottom: 15px; display: inline-flex; align-items: center; gap: 8px; font-weight: bold; }
 
       /* MODAIS */
-      .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(3px); }
+      .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
       .modal-overlay.active { opacity: 1; pointer-events: all; }
-      .modal-box { background: white; width: 85%; max-width: 400px; padding: 25px; border-radius: 15px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); transform: scale(0.8); transition: transform 0.3s; max-height: 80vh; overflow-y: auto; }
+      .modal-box { background: white; width: 90%; max-width: 400px; padding: 30px; border-radius: 25px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 85vh; overflow-y: auto; position: relative; }
       .modal-overlay.active .modal-box { transform: scale(1); }
-      .modal-input { width: 100%; padding: 12px; margin: 15px 0; border: 2px solid #eee; border-radius: 8px; text-align: center; font-size: 1.1rem; letter-spacing: 2px; }
-      .modal-actions { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
-      .btn-modal { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; flex: 1; }
-      .btn-confirm { background: var(--primary); color: white; }
-      .btn-cancel { background: #eee; color: #555; }
-      .info-content { text-align: left; white-space: pre-line; color: #555; line-height: 1.6; max-height: 300px; overflow-y: auto; background: #f9f9f9; padding: 10px; border-radius: 8px; border: 1px solid #eee; }
+      .modal-input { width: 100%; padding: 15px; margin: 20px 0; border: 2px solid #eee; border-radius: 12px; text-align: center; font-size: 1.2rem; letter-spacing: 3px; font-weight: bold; }
+      .btn-modal { padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: 0.2s; }
+      .btn-confirm { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(13, 71, 161, 0.2); }
+      .btn-cancel { background: #f0f0f0; color: #666; margin-right: 10px; }
+      
+      /* Botão Fechar Modal (X) */
+      .btn-close-modal {
+        position: absolute; top: 15px; right: 15px;
+        background: #f0f0f0; color: #666;
+        width: 35px; height: 35px; border-radius: 50%;
+        border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        font-weight: bold; font-size: 1rem; transition: 0.2s;
+      }
+      .btn-close-modal:hover { background: #e0e0e0; color: #333; }
 
-      .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.98); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+      .info-content { text-align: left; white-space: pre-line; color: #555; line-height: 1.6; max-height: 300px; overflow-y: auto; background: #f9f9f9; padding: 15px; border-radius: 12px; border: 1px solid #eee; margin-top: 10px;}
+
+      /* LOADER ANIMADO (Boneco Correndo) */
+      .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(5px); }
       .loading-overlay.active { opacity: 1; pointer-events: all; }
-      .track-line { width: 80%; max-width: 300px; height: 2px; background: #ddd; position: relative; margin-bottom: 20px; }
-      .runner-icon { font-size: 48px; color: var(--accent); position: absolute; bottom: 0; left: 0; }
-      .active .runner-icon { animation: runRace 1.5s linear infinite; }
-      @keyframes runRace { 0% { left: -10%; transform: scaleX(1); } 49% { transform: scaleX(1); } 50% { left: 110%; transform: scaleX(-1); } 100% { left: -10%; transform: scaleX(-1); } }
-      .loading-text { font-weight: bold; color: var(--primary); font-size: 1.2rem; margin-top: 20px; animation: pulse 1s infinite; }
+      
+      .track-container {
+        width: 250px; height: 100px; position: relative;
+        overflow: hidden; display: flex; align-items: flex-end; justify-content: flex-start;
+        border-bottom: 2px solid #ddd;
+      }
+      
+      .runner-animation {
+        font-size: 60px; color: var(--accent);
+        position: absolute; bottom: 0; left: -60px;
+        animation: runAcrossScreen 2s linear infinite;
+      }
+      
+      @keyframes runAcrossScreen {
+        0% { left: -60px; transform: scaleX(1); }
+        45% { transform: scaleX(1); }
+        50% { left: 260px; transform: scaleX(1); } /* Sai da tela */
+        50.1% { transform: scaleX(-1); left: 260px;} /* Vira */
+        95% { transform: scaleX(-1); }
+        100% { left: -60px; transform: scaleX(-1); } /* Volta */
+      }
 
-      /* SUCESSO ANIMADO */
-      .success-box { background: white; padding: 40px 20px; border-radius: 20px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.1); animation: fadeInUp 0.5s ease-out; position: relative; overflow: hidden; }
-      .success-message { font-size: 1.1rem; color: #555; margin: 15px 0; line-height: 1.5; }
-      @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-20px);} 60% {transform: translateY(-10px);} }
-      .medal-bounce { animation: bounce 2s infinite; }
+      .loading-text { font-weight: 800; color: var(--primary); font-size: 1.3rem; margin-top: 20px; animation: pulse 1s infinite; text-transform: uppercase; letter-spacing: 1px; }
+
+      /* SUCESSO */
+      .success-box { background: white; padding: 40px 20px; border-radius: 25px; text-align: center; box-shadow: 0 15px 50px rgba(0,0,0,0.15); animation: fadeInUp 0.5s ease-out; position: relative; overflow: hidden; }
+      .success-message { font-size: 1.1rem; color: #555; margin: 15px 0; line-height: 1.6; }
       .confetti { position: absolute; width: 10px; height: 10px; background-color: #f00; animation: fall linear forwards; }
       @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
-      @keyframes fadeInUp { from { opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+      @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-20px);} 60% {transform: translateY(-10px);} }
+      .medal-bounce { animation: bounce 2s infinite; }
       .hidden { display: none !important; }
-      footer { text-align: center; padding: 20px; font-size: 0.75rem; color: #999; background: white; border-top: 1px solid #eee; }
-      .dev-credit { font-weight: 500; color: var(--primary); }
-      .admin-toggle { background: none; border: none; color: #ddd; margin-top: 10px; cursor: pointer; font-size: 1.2rem; }
+      
+      footer { text-align: center; padding: 30px 20px 80px; font-size: 0.8rem; color: #888; }
+      .dev-credit { font-weight: 600; color: var(--primary); }
+      .admin-toggle { background: none; border: none; color: #ccc; margin-top: 10px; cursor: pointer; font-size: 1.3rem; transition: 0.3s; }
+      .admin-toggle:hover { color: var(--primary); }
 
-      /* IMPRESSÃO (PDF) */
+      /* PRINT */
       @media print {
         @page { size: landscape; margin: 1cm; }
         .header-container, .logo-wrapper, .form-card, footer, .btn-action, #success-view, .admin-toggle, .motivational-box, .modal-overlay, .admin-header button, .admin-tabs, .btn-print, #tab-config, .config-form, .prizes-box, .filters-container, .fab-info, .upload-group .btn-upload, #tab-premios, .btn-save-config { display: none !important; }
@@ -218,11 +223,10 @@
         .admin-panel { box-shadow: none; padding: 0; width: 100%; }
         .admin-header { background: white; color: black; border-bottom: 2px solid black; padding: 10px; margin-bottom: 20px; display: block; text-align: center; }
         .admin-header h2 { font-size: 18pt; text-transform: uppercase; }
-        .admin-header::after { content: "Relatório Completo de Inscritos"; display: block; font-size: 14pt; margin-top: 5px; }
-        .total-card { border: 1px solid #000; background: none; page-break-inside: avoid; margin-bottom: 20px; padding: 5px; text-align: left; }
+        .total-card { border: 1px solid #000; background: none; page-break-inside: avoid; margin-bottom: 20px; padding: 5px; text-align: left; color: black; box-shadow: none; }
         .total-number { color: black; font-size: 14pt; display: inline-block; margin-left: 10px; }
         .total-card h3 { color: black; font-size: 12pt; display: inline-block; margin: 0; }
-        .table-responsive { overflow: visible; }
+        .table-responsive { overflow: visible; box-shadow: none; }
         table { font-size: 9pt; border: 1px solid #000; width: 100%; border-collapse: collapse; table-layout: auto; }
         th { background-color: #ddd !important; color: black; border: 1px solid #000; padding: 4px; text-align: left; -webkit-print-color-adjust: exact; }
         td { border: 1px solid #000; padding: 4px; word-wrap: break-word; }
@@ -232,9 +236,15 @@
 </head>
 <body>
 
+    <!-- SPLASH SCREEN (INTRO) -->
+    <div id="splash-screen">
+      <div class="splash-logo"><i class="fas fa-running"></i></div>
+      <p style="margin-top:20px; color:#666; font-weight:500;">Carregando...</p>
+    </div>
+
     <!-- CABEÇALHO -->
     <div class="header-container">
-        <div style="height:150px; background:var(--primary);"></div>
+        <div style="height:100%; background:var(--primary); display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.2); font-size:5rem;"><i class="fas fa-image"></i></div>
     </div>
     <div class="logo-wrapper">
         <div class="logo-placeholder"><i class="fas fa-running"></i></div>
@@ -246,7 +256,7 @@
     <div class="container">
       <!-- FORMULÁRIO -->
       <div id="form-view">
-        <h1 class="event-title">Carregando...</h1>
+        <h1 class="event-title">Carregando Evento...</h1>
         <!-- EXIBIÇÃO DO LOCAL -->
         <div class="event-location"><i class="fas fa-map-marker-alt"></i> <span id="display-local">...</span></div>
         
@@ -281,7 +291,7 @@
           <div class="input-group"><i class="fas fa-users"></i><input type="text" id="equipe" placeholder="Nome da Equipe (Opcional)"></div>
           <div class="input-group"><i class="fas fa-phone-alt"></i><input type="text" id="telefone" placeholder="Telefone / WhatsApp" maxlength="15" oninput="mascaraTelefone(this)" required></div>
           <div class="input-group"><i class="fas fa-map-marker-alt"></i><input type="text" id="endereco" placeholder="Endereço Completo" required></div>
-          <button type="submit" class="btn-submit">Confirmar Inscrição <i class="fas fa-arrow-right"></i></button>
+          <button type="submit" class="btn-submit">Confirmar Inscrição</button>
         </form>
       </div>
 
@@ -290,10 +300,9 @@
         <div class="success-box" id="success-box-content">
           <i class="fas fa-medal fa-4x medal-bounce" style="color: gold; margin-bottom: 20px;"></i>
           <h2 style="color: var(--primary); text-transform: uppercase;">Parabéns, <span id="success-name">Atleta</span>!</h2>
-          <p class="success-subtitle" style="font-weight:bold; color:#333;">Sua inscrição foi confirmada com sucesso.</p>
-          <p class="success-message">Prepare o tênis e a hidratação. Nos vemos na largada!</p>
+          <p class="success-message">Sua inscrição foi confirmada.<br>Prepare-se para superar seus limites!</p>
           <hr style="border:0; border-top:1px solid #eee; margin:20px 0;">
-          <button onclick="novaInscricao()" class="btn-action" style="background:#eee; color:#333;"><i class="fas fa-redo"></i> Nova Inscrição</button>
+          <button onclick="novaInscricao()" class="btn-submit" style="background:#eee; color:#555; box-shadow:none;"><i class="fas fa-redo"></i> Nova Inscrição</button>
         </div>
       </div>
 
@@ -301,10 +310,11 @@
       <div id="admin-view" class="hidden">
         <div class="admin-panel">
           <div class="admin-header"><h2><i class="fas fa-cog"></i> Administração</h2><button onclick="novaInscricao()"><i class="fas fa-sign-out-alt"></i> Sair</button></div>
+          <!-- ABAS DO ADMIN -->
           <div class="admin-tabs">
-            <div class="admin-tab active" onclick="mudarAba('dashboard')">Dashboard</div>
-            <div class="admin-tab" onclick="mudarAba('config')">Configurações</div>
-            <div class="admin-tab" onclick="mudarAba('premios')">Premiação</div>
+            <button class="admin-tab active" onclick="mudarAba('dashboard')">Dashboard</button>
+            <button class="admin-tab" onclick="mudarAba('config')">Configurações</button>
+            <button class="admin-tab" onclick="mudarAba('premios')">Premiação</button>
           </div>
           
           <div class="admin-content">
@@ -312,7 +322,7 @@
             <div id="tab-dashboard" class="tab-view active">
               <div class="total-card"><h3>Total de Inscritos (Filtrado)</h3><div class="total-number" id="admin-total">0</div></div>
               
-              <!-- FILTROS -->
+              <!-- FILTROS DUPLOS -->
               <div class="filters-container">
                 <div class="filter-group">
                   <label>Filtrar por Categoria:</label>
@@ -334,6 +344,7 @@
                   </select>
                 </div>
               </div>
+
               <button onclick="window.print()" class="btn-print"><i class="fas fa-file-pdf"></i> Imprimir Relatório (PDF)</button>
               <div class="table-responsive"><table id="admin-table"><thead><tr><th>Data</th><th>Nome</th><th>CPF</th><th>Nasc.</th><th>Tel</th><th>Gênero</th><th>Equipe</th><th>Idade</th><th>Cat.</th><th>Endereço</th></tr></thead><tbody></tbody></table></div>
             </div>
@@ -359,7 +370,6 @@
             <!-- ABA PREMIAÇÃO DINÂMICA -->
             <div id="tab-premios" class="tab-view">
               <div class="config-form">
-                
                 <div class="config-section-title">Premiação Geral</div>
                 <button type="button" class="btn-add" onclick="addPremioRow('admin-premios-list')"><i class="fas fa-plus"></i> Adicionar Prêmio</button>
                 <div id="admin-premios-list"></div>
@@ -384,20 +394,21 @@
     <!-- MODAIS -->
     <div id="modal-senha" class="modal-overlay">
       <div class="modal-box">
+        <button class="btn-close-modal" onclick="fecharModalAdmin()"><i class="fas fa-times"></i></button>
         <i class="fas fa-lock fa-2x" style="color:var(--primary); margin-bottom:10px;"></i>
         <h3>Área Restrita</h3>
         <input type="password" id="input-senha-modal" class="modal-input" placeholder="••••••">
         <p id="erro-senha" style="color:red; font-size:0.8rem; display:none;">Senha incorreta!</p>
-        <div class="modal-actions"><button class="btn-modal btn-cancel" onclick="fecharModalAdmin()">Cancelar</button><button class="btn-modal btn-confirm" onclick="confirmarLoginAdmin()">Entrar</button></div>
+        <div class="modal-actions"><button class="btn-modal btn-confirm" onclick="confirmarLoginAdmin()">Entrar</button></div>
       </div>
     </div>
 
     <div id="modal-info" class="modal-overlay">
       <div class="modal-box">
+        <button class="btn-close-modal" onclick="fecharModalInfo()"><i class="fas fa-times"></i></button>
         <i class="fas fa-info-circle fa-2x" style="color:var(--accent); margin-bottom:10px;"></i>
         <h3>Informações do Evento</h3>
         <div id="info-texto" class="info-content"></div>
-        <div class="modal-actions"><button class="btn-modal btn-confirm" onclick="fecharModalInfo()">Fechar</button></div>
       </div>
     </div>
 
@@ -410,37 +421,64 @@
       </div>
     </div>
 
-    <div id="loading-overlay" class="loading-overlay"><div class="track-line"><i class="fas fa-running runner-icon"></i></div><div class="loading-text">Processando...</div></div>
+    <!-- LOADING OVERLAY ANIMADO -->
+    <div id="loading-overlay" class="loading-overlay">
+      <div class="track-container">
+        <div class="runner-animation"><i class="fas fa-running"></i></div>
+      </div>
+      <div class="loading-text">Processando...</div>
+    </div>
+
     <footer><p>Desenvolvido por <span class="dev-credit">Thiego Pereira</span></p><button class="admin-toggle" onclick="abrirModalAdmin()"><i class="fas fa-lock"></i></button></footer>
 
     <script>
+      // --- CONFIGURAÇÃO ---
       const API_URL = "https://script.google.com/macros/s/AKfycbwAQk2VM3oGr5ZhHge7ZIPy7hzQz-TqFO3u8QeAzjTEaCNURDvJW39Cyk-0MEXwzHRw/exec";
       const IMGBB_API_KEY = "fa0265b3bfc740c1eb09a7e4d6ec493a";
 
+      // --- INICIALIZAÇÃO ---
       document.addEventListener('DOMContentLoaded', () => {
         fetch(`${API_URL}?action=ping`).catch(() => {});
         carregarConfigsIniciais();
       });
 
       function carregarConfigsIniciais() {
-        document.querySelector('.loading-text').innerText = "Carregando evento...";
-        document.getElementById('loading-overlay').classList.add('active');
+        document.querySelector('.loading-text').innerText = "A carregar evento...";
+        
         fetch(`${API_URL}?action=getConfig`)
-          .then(res => res.json()).then(data => { if(data.status === 'success') atualizarInterface(data.data); document.getElementById('loading-overlay').classList.remove('active'); })
-          .catch(err => { console.error(err); document.getElementById('loading-overlay').classList.remove('active'); });
+          .then(res => res.json())
+          .then(data => {
+            if(data.status === 'success') {
+              atualizarInterface(data.data);
+            }
+            // Remove splash screen suavemente
+            const splash = document.getElementById('splash-screen');
+            splash.classList.add('splash-hidden');
+            setTimeout(() => splash.style.display = 'none', 800);
+          })
+          .catch(err => {
+            console.error(err);
+            document.getElementById('splash-screen').style.display = 'none'; // Fecha mesmo com erro para não travar
+          });
       }
 
       function atualizarInterface(cfg) {
         const headerContainer = document.querySelector('.header-container');
         if(cfg.URL_CAPA) headerContainer.innerHTML = `<img src="${cfg.URL_CAPA}" class="header-image"><div class="header-overlay"></div>`;
+        
         const logoWrapper = document.querySelector('.logo-wrapper');
         if(cfg.URL_LOGO) logoWrapper.innerHTML = `<img src="${cfg.URL_LOGO}" class="logo-img">`;
+        
         document.querySelector('h1.event-title').innerText = cfg.NOME_EVENTO;
         document.getElementById('display-local').innerText = cfg.LOCAL_EVENTO || "";
         
         const motBox = document.querySelector('.motivational-box');
-        if (cfg.FRASE_MOTIVACIONAL) { motBox.style.display = 'block'; motBox.querySelector('.motivational-text').innerHTML = `<i class="fas fa-quote-left" style="font-size:0.8em;"></i> ${cfg.FRASE_MOTIVACIONAL} <i class="fas fa-quote-right" style="font-size:0.8em;"></i>`; } else { motBox.style.display = 'none'; }
+        if (cfg.FRASE_MOTIVACIONAL) {
+           motBox.style.display = 'block';
+           motBox.querySelector('.motivational-text').innerHTML = `<i class="fas fa-quote-left" style="font-size:0.8em;"></i> ${cfg.FRASE_MOTIVACIONAL} <i class="fas fa-quote-right" style="font-size:0.8em;"></i>`;
+        } else { motBox.style.display = 'none'; }
 
+        // Renderiza Prémios
         renderizarListaPremios(cfg.LISTA_PREMIOS, 'user-prizes-list', 'prizes-geral-container');
         const obsDiv = document.getElementById('user-prizes-obs');
         if(cfg.OBS_PREMIACAO) { obsDiv.style.display = 'block'; obsDiv.innerText = cfg.OBS_PREMIACAO; } else { obsDiv.style.display = 'none'; }
@@ -469,6 +507,7 @@
         }
       }
 
+      /* API IMGBB */
       function uploadImgBB(input, targetId) {
         if (input.files && input.files[0]) {
           const formData = new FormData(); formData.append("image", input.files[0]); formData.append("key", IMGBB_API_KEY);
@@ -480,11 +519,13 @@
         }
       }
 
+      /* MASCARAS */
       function mascaraCPF(i) { var v = i.value; if(isNaN(v[v.length-1])){ i.value = v.substring(0, v.length-1); return; } v = v.replace(/\D/g,"").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2"); i.value = v; }
       function mascaraTelefone(i) { var v = i.value; v = v.replace(/\D/g,"").replace(/^(\d{2})(\d)/g,"($1) $2").replace(/(\d)(\d{4})$/,"$1-$2"); i.value = v; }
       function ativarData(input) { if (input.value && input.value.includes('/')) { const p = input.value.split('/'); input.value = `${p[2]}-${p[1]}-${p[0]}`; } input.type = 'date'; if(input.showPicker) try{input.showPicker()}catch(e){}; }
       function formatarDataVisual(input) { const v = input.value; if (v && v.includes('-')) { const p = v.split('-'); input.type = 'text'; input.value = `${p[2]}/${p[1]}/${p[0]}`; } else if (!v) input.type = 'text'; }
 
+      /* AVISO */
       function mostrarAviso(titulo, texto, isErro = false) {
         document.getElementById('aviso-titulo').innerText = titulo; document.getElementById('aviso-texto').innerText = texto;
         const icon = document.getElementById('aviso-icon'); if(isErro) { icon.className = "fas fa-times-circle fa-2x"; icon.style.color = "var(--error)"; } else { icon.className = "fas fa-check-circle fa-2x"; icon.style.color = "var(--success)"; }
@@ -492,34 +533,66 @@
       }
       function fecharModalAviso() { document.getElementById('modal-aviso').classList.remove('active'); }
 
+      /* LOGICA ENVIO (POST) */
       function enviarDados(e) {
-        e.preventDefault(); let valido = true; document.querySelectorAll('#cadastroForm [required]').forEach(el => { const group = el.closest('.input-group'); if(!el.value) { group.classList.add('error'); valido = false; } else { group.classList.remove('error'); } });
+        e.preventDefault(); 
+        let valido = true; const requireds = document.querySelectorAll('#cadastroForm [required]');
+        requireds.forEach(el => { const group = el.closest('.input-group'); if(!el.value) { group.classList.add('error'); valido = false; } else { group.classList.remove('error'); } });
         const cpf = document.getElementById('cpf'); if(cpf.value.length < 14) { cpf.closest('.input-group').classList.add('error'); valido = false; }
         if(!valido) { document.querySelector('.error').scrollIntoView({behavior: 'smooth', block: 'center'}); return; }
-        document.getElementById('loading-overlay').classList.add('active'); document.querySelector('.loading-text').innerText = "Salvando...";
+
+        document.getElementById('loading-overlay').classList.add('active');
+        document.querySelector('.loading-text').innerText = "Salvando cadastro...";
         
         const nomeCompleto = document.getElementById('nome').value; const primeiroNome = nomeCompleto.split(' ')[0];
         const dados = { action: 'salvarCadastro', payload: { nome: nomeCompleto, cpf: document.getElementById('cpf').value, nascimento: document.getElementById('nascimento').value, telefone: document.getElementById('telefone').value, endereco: document.getElementById('endereco').value, genero: document.getElementById('genero').value, equipe: document.getElementById('equipe').value } };
         
-        fetch(API_URL, { method: 'POST', body: JSON.stringify(dados) }).then(res => res.json()).then(res => { 
+        fetch(API_URL, { method: 'POST', body: JSON.stringify(dados) })
+          .then(res => res.json())
+          .then(res => { 
             document.getElementById('loading-overlay').classList.remove('active'); 
-            if (res.success) { document.getElementById('success-name').innerText = primeiroNome; document.getElementById('form-view').classList.add('hidden'); document.getElementById('success-view').classList.remove('hidden'); window.scrollTo(0,0);
-              for(let i=0; i<30; i++) { let c = document.createElement('div'); c.className = 'confetti'; c.style.left = Math.random()*100+'vw'; c.style.animationDuration = (Math.random()*2+1)+'s'; c.style.backgroundColor = ['#f00','#0f0','#00f','#ff0','#0ff'][Math.floor(Math.random()*5)]; document.getElementById('success-box-content').appendChild(c); }
-            } else { mostrarAviso("Atenção", res.message, true); }
-        }).catch(() => { document.getElementById('loading-overlay').classList.remove('active'); mostrarAviso("Erro", "Falha ao enviar.", true); });
-      }
-      function novaInscricao() { document.getElementById('cadastroForm').reset(); document.getElementById('nascimento').type = 'text'; document.querySelectorAll('.confetti').forEach(el => el.remove()); document.getElementById('success-view').classList.add('hidden'); document.getElementById('admin-view').classList.add('hidden'); document.getElementById('form-view').classList.remove('hidden'); window.scrollTo(0,0); }
+            if (res.success) { 
+              document.getElementById('success-name').innerText = primeiroNome;
+              document.getElementById('form-view').classList.add('hidden'); 
+              document.getElementById('success-view').classList.remove('hidden'); 
+              window.scrollTo(0,0);
+              
+              for(let i=0; i<30; i++) {
+                let confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.animationDuration = (Math.random() * 2 + 1) + 's';
+                confetti.style.backgroundColor = ['#f00', '#0f0', '#00f', '#ff0', '#0ff'][Math.floor(Math.random()*5)];
+                document.getElementById('success-box-content').appendChild(confetti);
+              }
 
+            } else { mostrarAviso("Atenção", res.message, true); }
+          })
+          .catch(err => { document.getElementById('loading-overlay').classList.remove('active'); mostrarAviso("Erro", "Falha ao enviar. Tente novamente.", true); });
+      }
+      function novaInscricao() { 
+        document.getElementById('cadastroForm').reset(); 
+        document.getElementById('nascimento').type = 'text'; 
+        document.querySelectorAll('.confetti').forEach(el => el.remove());
+        document.getElementById('success-view').classList.add('hidden'); 
+        document.getElementById('admin-view').classList.add('hidden'); 
+        document.getElementById('form-view').classList.remove('hidden'); 
+        window.scrollTo(0,0); 
+      }
+
+      /* MODAIS */
       function abrirModalInfo() { document.getElementById('modal-info').classList.add('active'); }
       function fecharModalInfo() { document.getElementById('modal-info').classList.remove('active'); }
       function abrirModalAdmin() { document.getElementById('modal-senha').classList.add('active'); document.getElementById('input-senha-modal').value = ''; document.getElementById('erro-senha').style.display = 'none'; document.getElementById('input-senha-modal').focus(); }
       function fecharModalAdmin() { document.getElementById('modal-senha').classList.remove('active'); }
+
       function confirmarLoginAdmin() {
         const senha = document.getElementById('input-senha-modal').value; const btn = document.querySelector('#modal-senha .btn-confirm'); const txt = btn.innerText; btn.innerText = "Verificando...";
         fetch(`${API_URL}?action=adminLogin&senha=${encodeURIComponent(senha)}`).then(res => res.json()).then(res => { btn.innerText = txt; if (res.success) { fecharModalAdmin(); carregarAdmin(res); } else { document.getElementById('erro-senha').innerText = res.message || "Senha incorreta!"; document.getElementById('erro-senha').style.display = 'block'; } }).catch(() => { btn.innerText = txt; mostrarAviso("Erro", "Falha de conexão.", true); });
       }
       document.getElementById('input-senha-modal').addEventListener('keyup', e => { if(e.key==='Enter') confirmarLoginAdmin() });
 
+      /* ADMINISTRAÇÃO */
       let dadosAdminCache = [];
       function carregarAdmin(dados) {
         document.getElementById('form-view').classList.add('hidden'); document.getElementById('success-view').classList.add('hidden'); document.getElementById('admin-view').classList.remove('hidden');
